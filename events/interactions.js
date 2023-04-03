@@ -1,5 +1,4 @@
 const client = require('../index');
-const config = require('../config/main');
 
 client.on('interactionCreate', async (interaction) => {
     if (interaction.isButton() || interaction.isStringSelectMenu() || interaction.isModalSubmit()) {
@@ -8,5 +7,5 @@ client.on('interactionCreate', async (interaction) => {
         if (!interactionModuleCustomId) return;
 
         interactionModuleCustomId.run(client, interaction);
-    } else return;
+    }
 });

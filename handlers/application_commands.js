@@ -4,8 +4,8 @@ const { Colors, ApplicationCommandsRegister, BetterConsoleLogger } = require('di
 module.exports = (client, config) => {
     let commands = [];
 
-    fs.readdirSync('./src/commands/').forEach((dir) => {
-        const files = fs.readdirSync('./src/commands/' + dir)
+    fs.readdirSync('./commands/').forEach((dir) => {
+        const files = fs.readdirSync('./commands/' + dir)
             .filter((file) => file.endsWith('.js'))
 
         for (let file of files) {

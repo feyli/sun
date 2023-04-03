@@ -2,7 +2,7 @@ const fs = require('fs');
 const { BetterConsoleLogger, Colors } = require('discord.js-v14-helper');
 
 module.exports = (client, config) => {
-    for (let file of fs.readdirSync('./src/interactions')) {
+    for (let file of fs.readdirSync('./interactions')) {
         let module = require('../interactions/' + file);
 
         if (module.customId && typeof module.customId === 'string') {

@@ -35,6 +35,6 @@ module.exports = {
     },
     
     channels: {
-        logging_channel: "1092530776081432606"
+        logging_channel: "1092552794323550258"
     }
 };
