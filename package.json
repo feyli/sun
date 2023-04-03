@@ -1,0 +1,21 @@
+{
+  "name": "discordjs-commands-handler",
+  "version": "1.0.0",
+  "description": "A unique & coolest Discord bot commands handler built with discord.js v14",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node ."
+  },
+  "keywords": [],
+  "author": "T.F.A#7524",
+  "license": "GNU",
+  "engines": {
+    "node": ">=16.9.0"
+  },
+  "dependencies": {
+    "discord.js": "^14.7.1",
+    "discord.js-v14-helper": "^1.11.4",
+    "mongoose": "^6.8.3",
+    "ms": "^2.1.3"
+  }
+}
