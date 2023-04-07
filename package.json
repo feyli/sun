@@ -1,21 +1,22 @@
 {
-  "name": "discordjs-commands-handler",
+  "name": "sunbot",
   "version": "1.0.0",
-  "description": "A unique & coolest Discord bot commands handler built with discord.js v14",
-  "main": "src/index.js",
-  "scripts": {
-    "start": "node ."
-  },
+  "description": "My Discord personal bot",
+  "main": "index.js",
   "keywords": [],
-  "author": "T.F.A#7524",
-  "license": "GNU",
+  "author": "Feyli",
+  "license": "Apache-2.0",
   "engines": {
     "node": ">=16.9.0"
   },
   "dependencies": {
+    "better-ms": "^1.1.7",
     "discord.js": "^14.7.1",
     "discord.js-v14-helper": "^1.11.4",
-    "mongoose": "^6.8.3",
-    "ms": "^2.1.3"
+    "esm": "^3.2.25",
+    "mongoose": "^6.0.12",
+    "ms": "^2.1.3",
+    "pretty-ms": "^8.0.0",
+    "pretty-print-ms": "^1.0.5"
   }
 }

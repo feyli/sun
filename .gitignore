@@ -102,7 +102,6 @@ dist
 
 # vuepress v2.x temp and cache directory
 .temp
-.cache
 
 # Serverless directories
 .serverless/
@@ -128,3 +127,4 @@ dist
 
 # idea
 .idea
+/config/main.js
