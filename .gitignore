@@ -128,3 +128,4 @@ dist
 # idea
 .idea
 /config/main.js
+/ecosystem.config.js
