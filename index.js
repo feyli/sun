@@ -1,3 +1,4 @@
+require('dotenv').config()
 const { Client, Collection } = require('discord.js')
 const fs = require('fs')
 const config = require('./config/main')
