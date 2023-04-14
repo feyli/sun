@@ -16,7 +16,7 @@ module.exports = {
         status: 'dnd',
       },
     },
-    token: 'NzQzODI2MTM1MDYxODg5MDI4.G28d1J.Wm07rQZW2z3UnMAWeLu0EZkpKFcODYF7EgS0W0',
+    token: process.env.TOKEN,
     id: '743826135061889028',
   },
 
