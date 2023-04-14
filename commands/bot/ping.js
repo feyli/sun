@@ -7,7 +7,7 @@ module.exports = {
     name_localizations: {
       'zh-CN': 'ching',
       'zh-TW': 'ching',
-      'it': 'spaghetti',
+      'it': 'parmiggiano',
       'es-ES': 'mi',
     },
   },
@@ -19,7 +19,7 @@ module.exports = {
     const locales = {
       'zh-CN': 'Chong!',
       'zh-TW': 'Chong!',
-      'it': 'Parmiggiani!',
+      'it': 'Reggiano!',
       'es-ES': 'Amor!',
     }
 
