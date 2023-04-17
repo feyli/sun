@@ -22,7 +22,7 @@ module.exports = {
   owner_only: true,
   cooldown: 10000,
   category: 'Owner',
-  run: async (client, interaction) => {
+  run: async (client, interaction, config, db) => {
     let code = interaction.options.get('code').value
     await interaction.deferReply(
       { ephemeral: interaction.options.get('ephemeral') || false },
@@ -31,7 +31,7 @@ module.exports = {
     try {
       const wrapperFn = new Function('client', 'interaction',
         `return (async () => { ${code} })();`)
-      result = await wrapperFn(client, interaction)
+      result = await wrapperFn(client, interaction, config, db)
     } catch (err) {
       result = err
     }

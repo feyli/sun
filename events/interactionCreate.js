@@ -1,16 +1,16 @@
-const client = require('../index')
-const config = require('../config/main')
+const client = require('../index');
+const config = require('../config/main');
 
-client.on('interactionCreate', (interaction) => {
+client.on('interactionCreate', async (interaction) => {
   if (interaction.isChatInputCommand()) {
     // command checking
     if (!client.commands.has(interaction.commandName)) return interaction.reply(
-      { content: 'This command does not exist!', ephemeral: true })
+      { content: 'This command is in development phase!', ephemeral: true });
     if (client.commands.get(interaction.commandName).owner_only && interaction.user.id !==
       config.users.owner) return interaction.reply({
       content: 'You do not have permission to use this command! (`owner-only command`)',
       ephemeral: true,
-    })
+    });
 
     // cooldown checking
     if (client.commands.get(interaction.commandName).cooldown !== 0 && interaction.user.id !==
@@ -19,16 +19,37 @@ client.on('interactionCreate', (interaction) => {
         return interaction.reply({
           content: 'You are on cooldown! This command has a cooldown of `' +
             client.commands.get(interaction.commandName).cooldown / 1000 + 's`.', ephemeral: true,
-        })
+        });
       } else {
-        client.cooldowns.get(interaction.commandName).set(interaction.user.id, true)
+        client.cooldowns.get(interaction.commandName).set(interaction.user.id, true);
         setTimeout(() => {
-          client.cooldowns.get(interaction.commandName).delete(interaction.user.id)
-        }, client.commands.get(interaction.commandName).cooldown)
+          client.cooldowns.get(interaction.commandName).delete(interaction.user.id);
+        }, client.commands.get(interaction.commandName).cooldown);
       }
     }
 
     // final run
-    client.commands.get(interaction.commandName).run(client, interaction)
+    client.commands.get(interaction.commandName).run(client, interaction, config);
+  } else if (interaction.isMessageContextMenuCommand()) {
+    if (!client.commands.has(interaction.commandName)) return interaction.reply(
+      { content: 'This command is in development phase!', ephemeral: true });
+    client.commands.get(interaction.commandName).run(client, interaction, config);
+  } else if (interaction.isButton()) {
+    if (!client.commands.has(interaction.customId)) return interaction.reply(
+      { content: 'This interaction is in development phase!', ephemeral: true });
+    client.commands.get(interaction.customId).run(client, interaction, config);
   }
-})
+
+  // noinspection JSUnresolvedVariable
+  else if (interaction.isAutocomplete()) {
+    const command = client.commands.get(interaction.commandName);
+
+    if (!command) return;
+
+    try {
+      await command.autocomplete(client, interaction);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+});

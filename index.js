@@ -3,7 +3,6 @@ const { Client, Collection } = require('discord.js')
 const fs = require('fs')
 const config = require('./config/main')
 
-// noinspection
 const client = new Client(config.client.constructor)
 
 client.commands = new Collection()
@@ -15,7 +14,7 @@ module.exports = client
 fs.readdirSync('./handlers').forEach((handler) => {
   console.log('[INFO] Handler loaded: ' + handler)
 
-  require('./handlers/' + handler)(client, config)
+  require('./handlers/' + handler)(client)
 })
 
 // noinspection JSIgnoredPromiseFromCall
