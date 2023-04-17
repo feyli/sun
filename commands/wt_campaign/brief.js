@@ -52,6 +52,7 @@ module.exports = {
       brief.footer = { text: 'Briefing de mission' };
 
       await channel.send({ embeds: [brief] });
+      await interaction.editReply(':airplane_small: | Mission brief __sent__.');
     } else if (interaction.options.getSubcommand() === 'get') {
       const db = client.db;
 
