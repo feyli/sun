@@ -73,6 +73,7 @@ module.exports = {
         let counterChannel = interaction.guild.channels.cache.get(dbChannelID)
 
         if (command === 'enable') {
+          const humanCount = interaction.guild.members.cache.filter((m) => !m.user.bot).size
           if (counterChannel) return interaction.editReply(
             `The member counter is already enabled (${counterChannel}) and is at position ${counterChannel.position +
             1} (voice channels only).`)
@@ -80,7 +81,7 @@ module.exports = {
           ChannelType.GuildVoice = 2
           const channel = await interaction.guild.channels.create(
             {
-              name: 'Members: ' + interaction.guild.memberCount,
+              name: 'Members: ' + humanCount,
               type: ChannelType.GuildVoice,
               permissionOverwrites: [{ id: interaction.guild.id, deny: '1048576' }],
             })
@@ -101,6 +102,7 @@ module.exports = {
         }
 
         if (command === 'setstyle') {
+          const humanCount = interaction.guild.members.cache.filter((m) => !m.user.bot).size
           if (!dbChannelID) return interaction.editReply(
             'No member counter has been set up in this server!')
           const name = interaction.options.getString('name')
@@ -122,8 +124,8 @@ module.exports = {
               [counterChannel.id, interaction.guild.id])
           }
           await counterChannel.setName(
-            name.replaceAll('{fullLength}', interaction.guild.memberCount).
-              replace('{thousandLength}', (interaction.guild.memberCount / 1000).toFixed(2) + 'k'))
+            name.replaceAll('{fullLength}', humanCount).
+              replace('{thousandLength}', (humanCount / 1000).toFixed(2) + 'k'))
           await interaction.editReply(
             `The member counter style has been set to \`${name}\` and the channel has been updated.`)
         }

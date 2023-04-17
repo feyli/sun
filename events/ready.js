@@ -1,8 +1,8 @@
-const config = require('../config/main')
-const client = require('../index')
+const config = require('../config/main');
+const client = require('../index');
 
 client.on('ready', async () => {
-  console.log('Logged in as ' + client.user.tag + '!')
+  console.log('Logged in as ' + client.user.tag + '!');
   // noinspection JSUnresolvedFunction
   client.channels.cache.get(config.channels.logging_channel).send({
     embeds: [
@@ -12,5 +12,7 @@ client.on('ready', async () => {
         timestamp: new Date(),
       },
     ],
-  })
-})
+  });
+
+  await require('../things/memberCounter')();
+});
