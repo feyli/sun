@@ -27,7 +27,7 @@ module.exports = {
     default_member_permissions: 8,
   },
   category: 'War Thunder Campaign',
-  guild_id: '1092532454243442732',
+  guild_id: '1097431302338256977',
   run: async (client, interaction) => {
     if (interaction.options.getSubcommand() === 'reset') {
       const db = client.db;

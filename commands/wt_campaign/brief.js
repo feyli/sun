@@ -16,7 +16,7 @@ module.exports = {
       },
     ],
   },
-  guild_id: '1092532454243442732',
+  guild_id: '1097431302338256977',
   category: 'War Thunder Campaign',
   run: async (client, interaction) => {
     if (interaction.options.getSubcommand() === 'send') {
