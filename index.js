@@ -1,21 +1,22 @@
-require('dotenv').config()
-const { Client, Collection } = require('discord.js')
-const fs = require('fs')
-const config = require('./config/main')
+require('dotenv').config();
+const {Client, Collection} = require('discord.js');
+const fs = require('fs');
+const config = require('./config/main');
 
-const client = new Client(config.client.constructor)
+const client = new Client(config.client.constructor);
+client.db = null;
 
-client.commands = new Collection()
-client.interactions = new Collection()
-client.cooldowns = new Collection()
+client.commands = new Collection();
+client.interactions = new Collection();
+client.cooldowns = new Collection();
 
-module.exports = client
+module.exports = client;
 
 fs.readdirSync('./handlers').forEach((handler) => {
-  console.log('[INFO] Handler loaded: ' + handler)
+    console.log('[INFO] Handler loaded: ' + handler);
 
-  require('./handlers/' + handler)(client)
-})
+    require('./handlers/' + handler)(client);
+});
 
 // noinspection JSIgnoredPromiseFromCall
-client.login(config.client.token)
+client.login(config.client.token);

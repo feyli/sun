@@ -1,4 +1,4 @@
-const client = require('../index');
+const client = require('../index')
 
 module.exports = async () => {
   const db = client.db
