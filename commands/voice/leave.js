@@ -1,4 +1,4 @@
-const {getVoiceConnection} = require('@discordjs/voice');
+const { getVoiceConnection } = require('@discordjs/voice');
 
 module.exports = {
     command_data: {
@@ -13,6 +13,7 @@ module.exports = {
         const connection = getVoiceConnection(interaction.guild.id);
         if (!connection) return interaction.reply('Not in a voice channel.');
         connection.disconnect();
-        await interaction.reply(`Left the voice channel./join`);
+        connection.destroy();
+        await interaction.reply(`Left the voice channel.`);
     }
 };
