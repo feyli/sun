@@ -3,6 +3,8 @@ const config = require('../config/main');
 
 client.on('interactionCreate', async (interaction) => {
   if (interaction.isChatInputCommand()) {
+    console.log(interaction.commandName)
+    console.log(client.commands)
     // command checking
     if (!client.commands.has(interaction.commandName)) return interaction.reply(
       { content: 'This command is in development phase!', ephemeral: true });
