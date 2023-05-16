@@ -436,6 +436,7 @@ module.exports = {
             }
             case 'leaderboard': {
                 const warns = await db.query('SELECT user_id, COUNT(*) as count FROM warns WHERE guild_id = ? GROUP BY user_id ORDER BY count DESC LIMIT ?', [interaction.guild.id, interaction.options.getInteger('limit') || 10]);
+                if (warns.length === 0) return interaction.editReply({ content: 'There are no warns in this server.' });
 
                 const embed = {
                     title: ":trophy: **Warn Leaderboard** :trophy:",
