@@ -23,8 +23,6 @@ module.exports = {
       'es-ES': 'Amor!',
     }
 
-    console.log(interaction.commandName)
-
     const now = Date.now()
     await interaction.deferReply()
     await interaction.editReply(
