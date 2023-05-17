@@ -13,7 +13,7 @@ module.exports = {
             type: 0,
           },
         ],
-        status: 'dnd',
+        status: 'online',
       },
     },
     token: process.env.TOKEN,
