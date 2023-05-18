@@ -162,7 +162,6 @@ module.exports = {
     },
     cooldown: 1000,
     category: 'Moderation',
-    owner_only: true,
     run: async (client, interaction) => {
         await interaction.deferReply();
         const db = client.db;

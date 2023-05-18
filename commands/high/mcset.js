@@ -36,6 +36,7 @@ module.exports = {
         ]
     },
     cooldown: 5000,
+    category: 'System Management',
     run: async (client, interaction) => {
         const db = client.db;
         const subcommand = interaction.options.getSubcommand();

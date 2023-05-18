@@ -46,7 +46,7 @@ module.exports = {
       },
     ],
   },
-  category: 'Utility',
+  category: 'System Management',
   cooldown: 5000,
   run: async (client, interaction) => {
     await interaction.deferReply();

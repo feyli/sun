@@ -10,6 +10,7 @@ module.exports = {
         type: 1,
         options: []
     },
+    category: 'Utility',
     cooldown: 5000,
     run: async (client, interaction) => {
         const db = client.db;
