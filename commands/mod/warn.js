@@ -195,7 +195,7 @@ module.exports = {
                 await db.query('INSERT INTO warns (warn_id, user_id, guild_id, reason_title, reason_description, creator_id) VALUES (?, ?, ?, ?, ?, ?)', [warn.warnId, warn.userId, warn.guildId, warn.title, warn.description, warn.creator]);
 
                 const interactionEmbed = {
-                    title: `Warned ${user}!`,
+                    title: `Warned ${user.username}!`,
                     footer: {
                         text: interaction.user.username,
                         icon_url: interaction.user.displayAvatarURL({ dynamic: true }),
@@ -295,7 +295,7 @@ module.exports = {
                 await db.query('DELETE FROM warns WHERE user_id = ? AND guild_id = ?', [user.id, interaction.guild.id]);
 
                 const embed = {
-                    title: `Cleared ${length} warns of ${user}!`,
+                    title: `Cleared ${length} warns of ${user.username}!`,
                     footer: {
                         text: interaction.user.username,
                         icon_url: interaction.user.displayAvatarURL({ dynamic: true }),
@@ -315,7 +315,7 @@ module.exports = {
                 warns.sort((a, b) => Date.parse(b.timestamp) / 1000 - Date.parse(a.timestamp) / 1000);
 
                 const embed = {
-                    title: `Warns of ${user}`,
+                    title: `Warns of ${user.username}`,
                     footer: {
                         text: interaction.user.username,
                         icon_url: interaction.user.displayAvatarURL({ dynamic: true }),
