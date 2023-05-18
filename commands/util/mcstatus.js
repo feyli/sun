@@ -1,3 +1,6 @@
+// noinspection JSUnresolvedVariable
+
+const { AttachmentBuilder, EmbedBuilder } = require("discord.js");
 const mslp = require('minecraft-status').MinecraftServerListPing;
 
 module.exports = {
@@ -15,13 +18,22 @@ module.exports = {
 
         if (!address) return interaction.reply({ content: 'No Minecraft server has been set for this Discord server.', ephemeral: true });
 
-        await interaction.deferReply({ ephemeral: false });
+        // await interaction.deferReply({ ephemeral: false });
 
-        const res = await mslp.ping(4, address, port);
+        const res = await mslp.ping(4, address, port).catch(() => {
+            return { players: { max: 0 } };
+        });
 
-        const embed = {
-            title: 'Minecraft Server Status',
-            fields: [
+        let buffer;
+        let attachment;
+        if (res.favicon) {
+            buffer = Buffer.from(res.favicon.split(',')[1], 'base64');
+            attachment = new AttachmentBuilder(buffer, { name: 'favicon.png' });
+        }
+
+        const embed = new EmbedBuilder()
+            .setTitle('Minecraft Server Status')
+            .addFields([
                 {
                     name: 'Status',
                     value: `${res.players.max !== 0 ? 'Online' : 'Offline'}`,
@@ -37,27 +49,31 @@ module.exports = {
                     value: `${port}`,
                     inline: true
                 }
-            ],
-            footer: {
+            ])
+            .setFooter({
                 text: `Requested by ${interaction.user.username}`,
-                icon_url: interaction.user.avatarURL({ dynamic: true })
-            },
-            color: res.players.max !== 0 ? 0x65CDB6 : 0xF04251
-        };
+                iconURL: interaction.user.avatarURL({ dynamic: true })
+            })
+            .setColor(res.players.max !== 0 ? 0x65CDB6 : 0xF04251)
+            .setThumbnail(attachment ? 'attachment://favicon.png' : 'https://media.minecraftforum.net/attachments/300/619/636977108000120237.png');
 
-        if (res.max !== 0) {
-            embed.fields.push({
-                name: 'Version',
-                value: `${res.version.name}`,
-                inline: true
-            });
-            embed.fields.push({
-                name: 'Players',
-                value: `${res.players.online}/${res.players.max}`,
-                inline: true
-            });
+        if (res.players.max !== 0) {
+            embed.addFields(
+                [
+                    {
+                        name: 'Version',
+                        value: `${res.version.name}`,
+                        inline: true
+                    },
+                    {
+                        name: 'Players',
+                        value: `${res.players.online}/${res.players.max}`,
+                        inline: true
+                    }
+                ]);
         }
 
-        await interaction.editReply({ embeds: [embed] });
+        // only include attachment if not null
+        await interaction.reply({ embeds: [embed], files: attachment ? [attachment] : [] });
     }
 };
