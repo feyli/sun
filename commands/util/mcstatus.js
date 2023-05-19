@@ -15,15 +15,16 @@ module.exports = {
     category: 'Utility',
     cooldown: 5000,
     run: async (client, interaction) => {
+        await interaction.deferReply()
         const db = client.db;
 
         const { address, port } = await db.query('SELECT address, port FROM mcstatus WHERE guild_id = ?', [interaction.guild.id]).then((res) => res[0]);
 
-        if (!address) return interaction.reply({ content: 'No Minecraft server has been set for this Discord server.', ephemeral: true });
+        if (!address) return interaction.editReply({ content: 'No Minecraft server has been set for this Discord server.', ephemeral: true });
 
         // await interaction.deferReply({ ephemeral: false });
 
-        const res = await mslp.ping(4, address, port).catch(() => {
+        const res = await mslp.ping(4, address, port, 10000).catch(() => {
             return { players: { max: 0 } };
         });
 
@@ -32,7 +33,7 @@ module.exports = {
         if (res.players) {
             const pingPromise = new Promise((resolve, reject) => {
                 const sock = new net.Socket();
-                sock.setTimeout(3000);
+                sock.setTimeout(10000);
                 const first = Date.now();
                 sock.on('connect', () => {
                     latency = `${Date.now() - first}ms`;
@@ -106,6 +107,6 @@ module.exports = {
         }
 
         // only include attachment if not null
-        await interaction.reply({ embeds: [embed], files: attachment ? [attachment] : [] });
+        await interaction.editReply({ embeds: [embed], files: attachment ? [attachment] : [] });
     }
 };
