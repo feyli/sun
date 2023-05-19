@@ -37,9 +37,8 @@ module.exports = async () => {
             }
         }
     } catch (e) {
-        for (const player of players) {
-            await guild.members.cache.get(player.user_id).roles.remove(inGameRole);
-            category.children.cache.forEach((c) => c.delete());
-        }
+        console.log("Catch Triggered");
+        await guild.members.cache.filter((m) => m.roles.cache.has('1108870536391565422')).forEach((m) => m.roles.remove(inGameRole));
+        if (category.children) category.children.cache.filter((c) => c.type === 'voice').forEach((c) => c.delete());
     }
 };
