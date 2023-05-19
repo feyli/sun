@@ -21,7 +21,7 @@ module.exports = async () => {
         const sample = res.players.sample;
 
         for (const player of players) {
-            if (sample.find(p => p.name === player.player_username) && guild.members.cache.get(player.user_id).presence.status !== 'offline') {
+            if (sample && sample.find(p => p.name === player.player_username) && guild.members.cache.get(player.user_id).presence.status !== 'offline') {
                 const member = guild.members.cache.get(player.user_id);
                 await member.roles.add(inGameRole);
                 await member.roles.add(playerRole);
@@ -38,6 +38,7 @@ module.exports = async () => {
         }
     } catch (e) {
         console.log("Catch Triggered");
+        console.log(e);
         await guild.members.cache.filter((m) => m.roles.cache.has('1108870536391565422')).forEach((m) => m.roles.remove(inGameRole));
         if (category.children) category.children.cache.filter((c) => c.type === 'voice').forEach((c) => c.delete());
     }
