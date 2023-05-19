@@ -1,4 +1,8 @@
+// noinspection JSUnresolvedVariable
+
 const { ChannelType } = require("discord.js");
+const { MinecraftServerListPing: mslp } = require("minecraft-status");
+
 module.exports = {
     command_data: {
         name: 'mcsettings',
@@ -87,9 +91,11 @@ module.exports = {
         if (subcommandGroup === 'counter') {
             if (subcommand === 'enable' || subcommand === 'disable' || subcommand === 'rename') {
                 // noinspection JSUnresolvedVariable
-                let dbChannelID = await db.query(
-                    'SELECT counter_channel_id FROM mcstatus WHERE guild_id = ?',
-                    [interaction.guild.id]).then((res) => res[0].counter_channel_id);
+                const guild = await db.query(
+                    'SELECT * FROM mcstatus WHERE guild_id = ? AND address IS NOT NULL',
+                    [interaction.guild.id]).then((res) => res[0]);
+                if (!guild) return interaction.editReply('No Minecraft server has been set up in this server! Use `/mcsettings set` to set one up.')
+                const dbChannelID = guild.counter_channel_id;
 
                 let counterChannel = interaction.guild.channels.cache.get(dbChannelID);
 
@@ -99,10 +105,15 @@ module.exports = {
                             `The Minecraft server counter is already enabled (${counterChannel}) and is at position ${counterChannel.position +
                             1} (voice channels only).`);
 
+                        const { address, port } = guild;
+
+                        const res = await mslp.ping(4, address, port, 5000).catch(() => null);
+                        const onlineCount = res ? res.players.online : '0';
+
                         ChannelType.GuildVoice = 2;
                         const channel = await interaction.guild.channels.create(
                             {
-                                name: 'Online: ',
+                                name: res && res.players.max !== 0 ? "Online: " + onlineCount : "Server Offline",
                                 type: ChannelType.GuildVoice,
                                 permissionOverwrites: [{ id: interaction.guild.id, deny: '1048576' }],
                             });
@@ -144,7 +155,8 @@ module.exports = {
                             db.query('UPDATE mcstatus SET counter_channel_id = ? WHERE guild_id = ?',
                                 [counterChannel.id, interaction.guild.id]);
                         }
-                        await interaction.editReply(`The counter name has been set to \`${name}\` and the channel will soon be updated.`);
+                        await interaction.editReply(`The counter name has been set to \`${name}\` and the channel will soon be updated. Note that this may take up to __15 minutes__. If you want to bypass this time, disable and enable the feature again.`);
+                        await require('../../things/minecraftCounter')(interaction.guild.id);
 
                         break;
                     }
@@ -208,6 +220,7 @@ module.exports = {
                     };
 
                     await interaction.editReply({ embeds: [embed] });
+                    await require('../../things/minecraftCounter')(interaction.guild.id);
                     break;
                 }
                 case 'reset': {
