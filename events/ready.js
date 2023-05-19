@@ -14,6 +14,10 @@ client.on('ready', async () => {
         ],
     });
 
+    await require('../things/arcaneUpdate')();
+    setInterval(() => {
+        require('../things/arcaneUpdate')();
+    }, 10000);
     await require('../things/memberCounter')();
     setInterval(() => {
         require('../things/memberCounter')();
@@ -22,8 +26,4 @@ client.on('ready', async () => {
     setInterval(() => {
         require('../things/minecraftCounter')();
     }, 900000);
-    await require('../things/arcaneUpdate')();
-    setInterval(() => {
-        require('../things/arcaneUpdate')();
-    }, 10000);
 });

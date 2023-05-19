@@ -63,7 +63,7 @@ module.exports = async (guildID = null) => {
             return { players: { max: 0 } };
         });
 
-        if (!res.players.max) return channel.setName('Server Offline');
+        if (!res.players.max) return channel.setName('Server Offline', 'counter update');
 
         const onlineCount = res.players.online;
         const maxCount = res.players.max;
@@ -79,8 +79,8 @@ module.exports = async (guildID = null) => {
             .replaceAll('{online}', onlineCount)
             .replaceAll('{max}', maxCount) || `Online: ${onlineCount}`;
 
-        await channel.setName(channelName);
-        console.log(`Updated ${address}:${port} to ${channelName}`);
+        channel.setName(channelName, 'counter update');
+        console.log(`Checked ${address}:${port}`);
     }
 
     console.log("Finished updating Minecraft server counters.");
