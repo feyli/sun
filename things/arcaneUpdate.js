@@ -20,7 +20,11 @@ module.exports = async () => {
 
         const sample = res.players.sample;
 
-        if (!sample) return category.children.cache.forEach((c) => c.delete());
+        if (!sample) {
+            category.children.cache.forEach((c) => c.delete());
+            guild.members.cache.filter((m) => m.roles.cache.has('1108870536391565422')).forEach((m) => m.roles.remove(inGameRole));
+            return;
+        }
 
         for (const player of sample) {
             if (!category.children.cache.find((c) => c.name === player.name)) await category.children.create({
@@ -33,12 +37,14 @@ module.exports = async () => {
         category.children.cache.filter((c) => !sample.find(p => p.name === c.name)).forEach((c) => c.delete());
 
         for (const player of players) {
-            if (sample && sample.find(p => p.name === player.player_username) && guild.members.cache.get(player.user_id).presence.status !== 'offline') {
+            if (sample.find(p => p.name === player.player_username) && guild.members.cache.get(player.user_id).presence.status !== 'offline') {
+                console.log("if")
                 const member = guild.members.cache.get(player.user_id);
                 await member.roles.add(inGameRole);
                 await member.roles.add(playerRole);
                 if (member.manageable) await member.setNickname(player.player_username, 'minecraft username check');
             } else {
+                console.log("else")
                 await guild.members.cache.get(player.user_id).roles.remove(inGameRole);
             }
         }
