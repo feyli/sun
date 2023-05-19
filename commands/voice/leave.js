@@ -5,6 +5,7 @@ module.exports = {
         name: 'leave',
         description: 'Leaves any voice channel.',
         type: 1,
+        dm_permission: false,
         options: [],
     },
     category: 'Voice',

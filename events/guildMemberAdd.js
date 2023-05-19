@@ -2,7 +2,6 @@ const client = require('../index');
 
 client.on('guildMemberAdd', async (member) => {
   const db = client.db;
-  await require('../things/memberCounter')();
 
   // noinspection JSUnresolvedVariable
   const welcomeChannelID = await db.query(

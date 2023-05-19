@@ -2,13 +2,15 @@
 
 const { AttachmentBuilder, EmbedBuilder } = require("discord.js");
 const mslp = require('minecraft-status').MinecraftServerListPing;
+const net = require('net');
 
 module.exports = {
     command_data: {
         name: 'mcstatus',
         description: 'Get the status of the Minecraft server set in this Discord server.',
         type: 1,
-        options: []
+        dm_permission: false,
+        options: [],
     },
     category: 'Utility',
     cooldown: 5000,
@@ -24,6 +26,30 @@ module.exports = {
         const res = await mslp.ping(4, address, port).catch(() => {
             return { players: { max: 0 } };
         });
+
+        let latency;
+
+        if (res.players) {
+            const pingPromise = new Promise((resolve, reject) => {
+                const sock = new net.Socket();
+                sock.setTimeout(3000);
+                const first = Date.now();
+                sock.on('connect', () => {
+                    latency = `${Date.now() - first}ms`;
+                    sock.destroy();
+                    resolve();
+                }).on('error', () => {
+                    latency = "N/A (unknown)";
+                    reject();
+                }).on('timeout', () => {
+                    latency = "N/A (timeout)";
+                    reject();
+                }).connect(port, address);
+            });
+
+            await pingPromise
+        }
+
 
         let buffer;
         let attachment;
@@ -69,6 +95,11 @@ module.exports = {
                     {
                         name: 'Players',
                         value: `${res.players.online}/${res.players.max}`,
+                        inline: true
+                    },
+                    {
+                        name: 'Latency',
+                        value: `${latency}`,
                         inline: true
                     }
                 ]);
