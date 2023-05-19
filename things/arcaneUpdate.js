@@ -20,20 +20,24 @@ module.exports = async () => {
 
         const sample = res.players.sample;
 
+        for (const player of sample) {
+            if (!category.children.cache.find((c) => c.name === player.name)) await category.children.create({
+                name: player.name,
+                type: ChannelType.GuildVoice,
+                permissionOverwrites: [{ id: guild.id, deny: '1048576' }]
+            });
+        }
+
+        await category.children.cache.filter((c) => !sample.find(p => p.name === c.name)).forEach((c) => c.delete());
+
         for (const player of players) {
             if (sample && sample.find(p => p.name === player.player_username) && guild.members.cache.get(player.user_id).presence.status !== 'offline') {
                 const member = guild.members.cache.get(player.user_id);
                 await member.roles.add(inGameRole);
                 await member.roles.add(playerRole);
-                if (!category.children.cache.find((c) => c.name === player.player_username)) await category.children.create({
-                    name: player.player_username,
-                    type: ChannelType.GuildVoice,
-                    permissionOverwrites: [{ id: guild.id, deny: '1048576' }]
-                });
                 if (member.manageable) await member.setNickname(player.player_username, 'minecraft username check');
             } else {
                 await guild.members.cache.get(player.user_id).roles.remove(inGameRole);
-                if (category.children.cache.find((c) => c.name === player.player_username)) await category.children.cache.find((c) => c.name === player.player_username).delete();
             }
         }
     } catch (e) {
