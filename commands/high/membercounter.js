@@ -47,7 +47,7 @@ module.exports = {
         const db = client.db;
         const command = interaction.options.getSubcommand();
 
-        if (command === 'enable' || command === 'disable' || command === 'setstyle' || command ===
+        if (command === 'enable' || command === 'disable' || command === 'rename' || command ===
             'status') {
             // noinspection JSUnresolvedVariable
             let dbChannelID = await db.query(

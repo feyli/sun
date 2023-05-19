@@ -85,7 +85,7 @@ module.exports = {
         await interaction.deferReply({ ephemeral: false });
 
         if (subcommandGroup === 'counter') {
-            if (subcommand === 'enable' || subcommand === 'disable' || subcommand === 'setstyle') {
+            if (subcommand === 'enable' || subcommand === 'disable' || subcommand === 'rename') {
                 // noinspection JSUnresolvedVariable
                 let dbChannelID = await db.query(
                     'SELECT counter_channel_id FROM mcstatus WHERE guild_id = ?',
