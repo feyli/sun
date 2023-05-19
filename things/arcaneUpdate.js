@@ -20,6 +20,8 @@ module.exports = async () => {
 
         const sample = res.players.sample;
 
+        if (!sample) return category.children.cache.forEach((c) => c.delete());
+
         for (const player of sample) {
             if (!category.children.cache.find((c) => c.name === player.name)) await category.children.create({
                 name: player.name,
@@ -28,7 +30,7 @@ module.exports = async () => {
             });
         }
 
-        await category.children.cache.filter((c) => !sample.find(p => p.name === c.name)).forEach((c) => c.delete());
+        category.children.cache.filter((c) => !sample.find(p => p.name === c.name)).forEach((c) => c.delete());
 
         for (const player of players) {
             if (sample && sample.find(p => p.name === player.player_username) && guild.members.cache.get(player.user_id).presence.status !== 'offline') {
