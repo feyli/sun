@@ -26,7 +26,9 @@ module.exports = async () => {
         const channelName = style?.replaceAll('{fullLength.space}', fullLengthSpaceFormat)
                 .replaceAll('{fullLength.comma}', fullLengthCommaFormat)
                 .replaceAll('{thousandLength}', thousandLengthFormat)
+                .replaceAll('{fullLength}', humanCount.toString())
             || `Members: ${humanCount}`;
+
         channel.setName(channelName);
     }
 };

@@ -85,13 +85,11 @@ module.exports = {
                 await interaction.editReply('Member counter has been disabled!');
             }
 
-            if (command === 'setstyle') {
-                const humanCount = interaction.guild.members.cache.filter((m) => !m.user.bot).size;
+            if (command === 'rename') {
                 if (!dbChannelID) return interaction.editReply(
                     'No member counter has been set up in this server!');
                 const name = interaction.options.getString('name');
-                if (!name.includes('{fullLength}') &&
-                    !name.includes('{thousandLength}')) return interaction.editReply(
+                if (!['{fullLength}', '{thousandLength}', '{fullLength.space}', '{fullLength.comma}'].some((e) => name.includes(e))) return interaction.editReply(
                     'The name must include `{fullLength}` or `{thousandLength}`.');
                 db.query('UPDATE guilds SET member_counter_style = ? WHERE guild_id = ?',
                     [name, interaction.guild.id]);
@@ -107,8 +105,6 @@ module.exports = {
                     db.query('UPDATE guilds SET member_counter_channel_id = ? WHERE guild_id = ?',
                         [counterChannel.id, interaction.guild.id]);
                 }
-                await counterChannel.setName(
-                    name.replaceAll('{fullLength}', humanCount).replace('{thousandLength}', (humanCount / 1000).toFixed(2) + 'k'));
                 await interaction.editReply(
                     `The member counter style has been set to \`${name}\` and the channel will soon be updated (remember that due to Discord limitations, counters are updated every 15 minutes).`);
             }

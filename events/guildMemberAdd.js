@@ -1,6 +1,8 @@
 const client = require('../index');
 
 client.on('guildMemberAdd', async (member) => {
+  if (member.user.bot) return;
+
   const db = client.db;
 
   // noinspection JSUnresolvedVariable
