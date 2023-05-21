@@ -7,6 +7,7 @@ module.exports = async (client) => {
         user: config.database.user,
         password: config.database.password,
         database: config.database.database,
+        bigIntAsNumber: true,
     });
 
     client.db = await pool.getConnection();

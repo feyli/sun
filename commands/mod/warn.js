@@ -309,9 +309,9 @@ module.exports = {
             case 'list': {
                 const user = interaction.options.getUser('user');
 
-                const warns = await db.query('SELECT * FROM warns WHERE user_id = ? AND guild_id = ?', [user.id, interaction.guild.id]);
+                const warns = await db.query('SELECT warn_id, reason_description, reason_title, UNIX_TIMESTAMP(timestamp) AS timestamp FROM warns WHERE user_id = ? AND guild_id = ?', [user.id, interaction.guild.id, user.id, interaction.guild.id]);
                 if (warns.length === 0) return interaction.editReply({ content: 'This user has no warns (at least on this server).', ephemeral: true });
-                warns.sort((a, b) => Date.parse(b.timestamp) / 1000 - Date.parse(a.timestamp) / 1000);
+                warns.sort((a, b) => b.timestamp - a.timestamp);
 
                 const embed = {
                     title: `Warns of ${user.username}`,
@@ -325,11 +325,10 @@ module.exports = {
                 };
 
                 for (const warn of warns) {
-                    const unix = Date.parse(warn.timestamp + "Z") / 1000;
-
+                    console.log(warn);
                     embed.fields.push({
                         name: `Warn ID: \`${warn.warn_id}\``,
-                        value: `Title: ${warn.reason_title}${warn.reason_description ? `\nDescription: ${warn.reason_description}` : ""}\nDate and time: <t:${unix}:d> <t:${unix}:T>`
+                        value: `Title: ${warn.reason_title}${warn.reason_description ? `\nDescription: ${warn.reason_description}` : ""}\nDate and time: <t:${warn.timestamp}:d> <t:${warn.timestamp}:T>`
                     });
                 }
 
@@ -338,7 +337,7 @@ module.exports = {
             }
             case 'info': {
                 const givenID = interaction.options.getString('warn_id');
-                const warn = await db.query('SELECT * FROM warns WHERE warn_id = ?', [givenID]).then((res) => {
+                const warn = await db.query('SELECT warn_id, user_id, guild_id, reason_title, reason_description, creator_id, UNIX_TIMESTAMP(timestamp) AS timestamp FROM warns WHERE warn_id = ?', [givenID]).then((res) => {
                     return res[0];
                 });
                 if (!warn || warn.guild_id !== interaction.guild.id) return interaction.editReply({ content: 'This warn ID does not exist.', ephemeral: true });
@@ -376,7 +375,7 @@ module.exports = {
                         },
                         {
                             name: "Date and time",
-                            value: `<t:${Date.parse(timestamp + "Z") / 1000}:d> <t:${Date.parse(timestamp + "Z") / 1000}:T> (\`${Date.parse(timestamp + "Z")}\`)`,
+                            value: `<t:${timestamp}:d> <t:${timestamp}:T> (\`${timestamp}\`)`,
                             inline: true
                         },
                         {
