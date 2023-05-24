@@ -129,3 +129,4 @@ dist
 .idea
 /config/main.js
 /ecosystem.config.js
+/motd-to-img/package-lock.json
