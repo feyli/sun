@@ -48,8 +48,11 @@ module.exports = {
 
                 if (res.errorMessage && res.errorMessage.includes("Couldn't find")) return interaction.editReply(`Le pseudo \`${nickname}\` n'existe pas sur Minecraft. Veuillez indiquer un pseudo valide.`);
 
-                const result = await db.query('SELECT user_id FROM arcane_players WHERE player_uuid = ?', [res.id]).then(res => res[0]);
-                if (res) return interaction.editReply(`<@${result.user_id}> a déjà lié ce profil Minecraft à son profil Discord.`)
+                const [result] = await db.query('SELECT user_id FROM arcane_players WHERE player_uuid = ?', [res.id]);
+                if (result) {
+                    if (result.user_id === interaction.user.id) return interaction.editReply(`Ce profil Minecraft est déjà lié à votre profil Discord.`)
+                    else return interaction.editReply(`<@${result.user_id}> a déjà lié ce profil Minecraft à son profil Discord.`)
+                }
 
                 await db.query('INSERT INTO arcane_players (user_id, player_uuid) VALUES (?, ?) ON DUPLICATE KEY UPDATE player_uuid = ?', [interaction.user.id, res.id, res.id])
 
