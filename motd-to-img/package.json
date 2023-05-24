@@ -1,0 +1,7 @@
+{
+  "name": "motd-to-img",
+  "version": "1.0.0",
+  "dependencies": {
+    "minecraft-motd-util": "^1.1.12"
+  }
+}

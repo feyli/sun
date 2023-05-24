@@ -3,7 +3,7 @@
 const { AttachmentBuilder, EmbedBuilder } = require("discord.js");
 const mslp = require('minecraft-status').MinecraftServerListPing;
 const net = require('net');
-const Jimp = require('jimp');
+const motdToImg = require('../../motd-to-img/index');
 
 module.exports = {
     command_data: {
@@ -55,9 +55,12 @@ module.exports = {
 
         let buffer;
         let favicon;
+
+        const files = [];
         if (res.favicon) {
             buffer = Buffer.from(res.favicon.split(',')[1], 'base64');
             favicon = new AttachmentBuilder(buffer, { name: 'favicon.png' });
+            files.push(favicon);
         }
 
         const embed = new EmbedBuilder()
@@ -105,18 +108,14 @@ module.exports = {
                         inline: true
                     }
                 ]);
+            await interaction.editReply({ embeds: [embed], files: files });
+            const motdImage = await motdToImg(res.description);
+            const motdBanner = new AttachmentBuilder(motdImage, { name: 'motd.png' });
+            embed.setImage('attachment://motd.png');
+            files.push(motdBanner);
         }
 
         // only include attachment if not null
-        await interaction.editReply({ embeds: [embed], files: favicon ? [favicon] : [] });
-
-        if (res.players.max !== 0) {
-            const motdImage = `https://sr-api.sfirew.com/server/${address}:${port}/banner/motd.png?hl=en&v=67DvWb4tVJ`;
-            const image = await Jimp.read(motdImage);
-            image.crop(230, 66, 1580, 150);
-            const motdBanner = new AttachmentBuilder(await image.getBufferAsync(Jimp.MIME_PNG), { name: 'motd.png' });
-            embed.setImage('attachment://motd.png');
-            await interaction.editReply({ embeds: [embed], files: favicon ? [favicon, motdBanner] : [motdBanner] });
-        }
+        await interaction.editReply({ embeds: [embed], files: files });
     }
 };
