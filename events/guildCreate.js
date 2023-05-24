@@ -1,8 +1,14 @@
-const client = require('../index')
+const client = require('../index');
 
 client.on('guildCreate', (guild) => {
-        const db = client.db;
+    client.db.query('INSERT INTO guilds (guild_id) VALUES (?) ON DUPLICATE KEY UPDATE guild_id=?', [guild.id, guild.id]).catch(console.error);
 
-        db.query('INSERT INTO guilds (guild_id) VALUES (?) ON DUPLICATE KEY UPDATE guild_id=?', [guild.id, guild.id]).catch(console.error);
-    }
-)
+    client.user.setPresence({
+        activities: [
+            {
+                type: 0,
+                name: `${client.guilds.cache.size} servers`
+            }
+        ]
+    });
+});

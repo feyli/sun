@@ -14,6 +14,15 @@ client.on('ready', async () => {
         ],
     });
 
+    client.user.setPresence({
+        activities: [
+            {
+                type: 0,
+                name: `${client.guilds.cache.size} servers`
+            }
+        ]
+    });
+
     await require('../things/arcaneUpdate')();
     setInterval(() => {
         require('../things/arcaneUpdate')();

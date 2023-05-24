@@ -9,7 +9,7 @@ module.exports = {
       presence: {
         activities: [
           {
-            name: 'I\'m not playing!',
+            name: `Preparing the presence...`,
             type: 0,
           },
         ],
