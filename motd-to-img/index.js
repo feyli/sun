@@ -50,6 +50,7 @@ module.exports = (description) => {
                 });
             });
         } else {
+            if (description.text) description = description.text;
             description = description.split('\n');
             const options = {
                 formattingCharacter: '§'
@@ -59,11 +60,11 @@ module.exports = (description) => {
                     return {
                         text: part.text,
                         styles: {
-                            "color": part.color.replaceAll('white', '#FFFFFF').replaceAll('black', '#000000').replaceAll('dark_blue', '#0000AA').replaceAll('dark_green', '#00AA00').replaceAll('dark_aqua', '#00AAAA').replaceAll('dark_red', '#AA0000').replaceAll('dark_purple', '#AA00AA').replaceAll('gold', '#FFAA00').replaceAll('gray', '#AAAAAA').replaceAll('dark_gray', '#555555').replaceAll('blue', '#5555FF').replaceAll('green', '#55FF55').replaceAll('aqua', '#55FFFF').replaceAll('red', '#FF5555').replaceAll('light_purple', '#FF55FF').replaceAll('yellow', '#FFFF55').replaceAll('reset', '#FFFFFF'),
+                            "color": part.color.replaceAll('white', '#FFFFFF').replaceAll('black', '#000000').replaceAll('dark_blue', '#0000AA').replaceAll('dark_green', '#00AA00').replaceAll('dark_aqua', '#00AAAA').replaceAll('dark_red', '#AA0000').replaceAll('dark_purple', '#AA00AA').replaceAll('gold', '#FFAA00').replaceAll('gray', '#AAAAAA').replaceAll('dark_gray', '#555555').replaceAll('blue', '#5555FF').replaceAll('green', '#55FF55').replaceAll('aqua', '#55FFFF').replaceAll('red', '#FF5555').replaceAll('light_purple', '#FF55FF').replaceAll('yellow', '#FFFF55').replaceAll('reset', '#AAAAAA'),
                             // only add font-weight: bold if the text is bold
                             "font-weight": part.bold ? 'bold' : "",
                             // only add font-style: italic if the text is italic
-                            "font-style": part.italic ? 'italic' : "",
+                            "font-style": part.italics ? 'italic' : "",
                             // only add text-decoration: underline if the text is underlined and strikethrough if the text is strikethrough
                             "text-decoration": [part.underline ? 'underline' : undefined, part.strikethrough ? 'line-through' : undefined]
                         }

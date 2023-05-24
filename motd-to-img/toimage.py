@@ -98,7 +98,7 @@ for i in range(0, 5):
     draw.rectangle(((588 + i * 4, 16 - 2 * i), (589 + i * 4, 19)), fill=filldark)
 
 # crop img to remove 150 pixels of every side
-cropped = img.crop((70, 20, 610, 73))
+cropped = img.crop((65, 20, 610, 73))
 
 buffered = BytesIO()
 cropped.save(buffered, format="PNG")
