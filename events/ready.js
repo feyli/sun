@@ -17,7 +17,7 @@ client.on('ready', async () => {
     client.user.setPresence({
         activities: [
             {
-                type: 0,
+                type: 3,
                 name: `${client.guilds.cache.size} servers`
             }
         ]
