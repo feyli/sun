@@ -26,6 +26,8 @@ module.exports = async () => {
             return;
         }
 
+        sample.forEach((p) => p.id = p.id.replace(/-/g, ''));
+
         for (const player of sample) {
             if (!category.children.cache.find((c) => c.name === player.name)) await category.children.create({
                 name: player.name,
@@ -37,20 +39,18 @@ module.exports = async () => {
         category.children.cache.filter((c) => !sample.find(p => p.name === c.name)).forEach((c) => c.delete());
 
         for (const player of players) {
-            if (sample.find(p => p.name === player.player_username) && guild.members.cache.get(player.user_id).presence.status !== 'offline') {
-                console.log("if")
+            if (sample.find(p => p.id === player.player_uuid) && guild.members.cache.get(player.user_id).presence.status !== 'offline') {
                 const member = guild.members.cache.get(player.user_id);
                 await member.roles.add(inGameRole);
                 await member.roles.add(playerRole);
-                if (member.manageable) await member.setNickname(player.player_username, 'minecraft username check');
+                if (member.manageable) await member.setNickname(sample.find((p) => p.id === player.player_uuid).name, 'minecraft username check');
             } else {
-                console.log("else")
                 await guild.members.cache.get(player.user_id).roles.remove(inGameRole);
             }
         }
     } catch (e) {
         console.log("Catch Triggered");
-        console.log(e);
+        console.error(e);
         await guild.members.cache.filter((m) => m.roles.cache.has('1108870536391565422')).forEach((m) => m.roles.remove(inGameRole));
         if (category.children) category.children.cache.filter((c) => c.type === 'voice').forEach((c) => c.delete());
     }
