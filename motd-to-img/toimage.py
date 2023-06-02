@@ -11,6 +11,8 @@ info = json.loads(sys.argv[1])
 def draw_underlined_text(draw, pos, text, font, **options):
     twidth, theight = draw.textsize(text, font=font)
     lx, ly = pos[0], pos[1] + theight
+    if pos[1] == 44:
+        ly += 3
     draw.text(pos, text, font=font, **options)
     draw.line((lx, ly, lx + twidth, ly), **options)
 
@@ -55,10 +57,10 @@ for i, part in enumerate(line2):
         font = fontitalic
     if style['font-weight'] == "bold" and style['font-style'] == "italic":
         font = fontboldanditalic
-    if style['text-decoration'] == "underlined":
-        draw_underlined_text(draw, (xalt, 46), part['text'], fill=info[1][i]['styles']['color'], font=font)
+    if "underline" in style['text-decoration']:
+        draw_underlined_text(draw, (xalt, 44), part['text'], fill=info[1][i]['styles']['color'], font=font)
     else:
-        draw.text((xalt, 52), part['text'], fill=info[1][i]['styles']['color'], font=font, anchor="lm")
+        draw.text((xalt, 56), part['text'], fill=info[1][i]['styles']['color'], font=font, anchor="lm")
     xalt += font.getbbox(part['text'])[2]
 # Server name
 if servername is not None:
