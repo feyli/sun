@@ -13,7 +13,7 @@ module.exports = async () => {
 
     if (!guild || !inGameRole || !playerRole || !category) return console.log('Arcane Update: Something went wrong. (guild, inGameRole, playerRole, category)');
 
-    const players = await db.query('SELECT * FROM arcane_players');
+    const players = await db.query('SELECT user_id, REPLACE(player_uuid, \'-\', \'\') AS player_uuid FROM arcane_players');
 
     try {
         const res = await mslp.ping(4, '88.170.151.90', 32768);
@@ -39,7 +39,7 @@ module.exports = async () => {
         category.children.cache.filter((c) => !sample.find(p => p.name === c.name)).forEach((c) => c.delete());
 
         for (const player of players) {
-            if (sample.find(p => p.id === player.player_uuid) && guild.members.cache.get(player.user_id).presence.status !== 'offline') {
+            if (sample.find(p => p.id === player.player_uuid) && guild.members.cache.get(player.user_id).presence && guild.members.cache.get(player.user_id).presence.status !== 'offline') {
                 const member = guild.members.cache.get(player.user_id);
                 await member.roles.add(inGameRole);
                 await member.roles.add(playerRole);
