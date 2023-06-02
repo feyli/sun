@@ -40,8 +40,8 @@ for i, part in enumerate(line1):
     if style['font-weight'] == "bold" and style['font-style'] == "italic":
         font = fontboldanditalic
 
-    if style['text-decoration'] == "underline":
-        draw_underlined_text(draw, (xalt, 28), part['text'], fill=info[0][i]['styles']['color'], font=font)
+    if "underline" in style['text-decoration']:
+        draw_underlined_text(draw, (xalt, 22), part['text'], fill=info[0][i]['styles']['color'], font=font)
     else:
         draw.text((xalt, 34), part['text'], fill=info[0][i]['styles']['color'], font=font, anchor="lm")
     xalt += font.getbbox(part['text'])[2]
@@ -55,7 +55,7 @@ for i, part in enumerate(line2):
         font = fontitalic
     if style['font-weight'] == "bold" and style['font-style'] == "italic":
         font = fontboldanditalic
-    if style['text-decoration'] == "underline":
+    if style['text-decoration'] == "underlined":
         draw_underlined_text(draw, (xalt, 46), part['text'], fill=info[1][i]['styles']['color'], font=font)
     else:
         draw.text((xalt, 52), part['text'], fill=info[1][i]['styles']['color'], font=font, anchor="lm")

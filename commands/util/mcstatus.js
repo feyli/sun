@@ -109,7 +109,6 @@ module.exports = {
                     }
                 ]);
             await interaction.editReply({ embeds: [embed], files: files });
-            console.log(res.description)
             const motdImage = await motdToImg(res.description);
             const motdBanner = new AttachmentBuilder(motdImage, { name: 'motd.png' });
             embed.setImage('attachment://motd.png');

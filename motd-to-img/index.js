@@ -18,7 +18,8 @@ module.exports = (description) => {
             if (i !== description.length) {
                 // split the array into two, one before '\n' and one after (taking into account any characters after '\n')
                 if (description[i].text.endsWith('\n')) {
-                    description = [description.slice(0, i), description.slice(i + 1)];
+                    description = [description.slice(0, i + 1), description.slice(i + 1)];
+                    description[0][description[0].length - 1].text = description[0][description[0].length - 1].text.slice(0, -1);
                 } else {
                     // add the characters after '\n' to the second array
                     const newLineObject = description[i];
@@ -26,7 +27,7 @@ module.exports = (description) => {
                     description[0].push({
                         ...newLineObject,
                         text: newLineObject.text.split('\n')[0]
-                    });
+                    })
                     description[1].unshift({
                         ...newLineObject,
                         text: newLineObject.text.split('\n')[1]
@@ -44,7 +45,7 @@ module.exports = (description) => {
                             // only add font-style: italic if the text is italic
                             "font-style": part.italic ? 'italic' : "",
                             // only add text-decoration: underline if the text is underlined and strikethrough if the text is strikethrough
-                            "text-decoration": [part.underline ? 'underline' : undefined, part.strikethrough ? 'line-through' : undefined]
+                            "text-decoration": [part.underlined ? 'underline' : undefined, part.strikethrough ? 'line-through' : undefined]
                         }
                     };
                 });
@@ -66,7 +67,7 @@ module.exports = (description) => {
                             // only add font-style: italic if the text is italic
                             "font-style": part.italics ? 'italic' : "",
                             // only add text-decoration: underline if the text is underlined and strikethrough if the text is strikethrough
-                            "text-decoration": [part.underline ? 'underline' : undefined, part.strikethrough ? 'line-through' : undefined]
+                            "text-decoration": [part.underlined ? 'underline' : undefined, part.strikethrough ? 'line-through' : undefined]
                         }
                     };
                 });
