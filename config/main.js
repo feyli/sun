@@ -28,10 +28,18 @@ module.exports = {
   channels: {
     logging_channel: '1092552794323550258',
   },
-  database: {
+  databases: [
+      {
     host: '185.142.53.15',
     user: 'feyli',
     password: process.env.DBPASSWORD,
     database: 'sunbot',
-  }
+  },
+    {
+      host: '185.142.53.15',
+      user: 'arcane',
+      password: process.env.ARCANEDBPASSWORD,
+      database: 'arcane_blades',
+    }
+  ]
 }

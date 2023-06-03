@@ -3,11 +3,11 @@ const config = require('../config/main');
 
 module.exports = async (client) => {
     const pool = mariadb.createPool({
-        host: config.database.host,
-        user: config.database.user,
-        password: config.database.password,
-        database: config.database.database,
-        bigIntAsNumber: true,
+        host: config.databases[0].host,
+        user: config.databases[0].user,
+        password: config.databases[0].password,
+        database: config.databases[0].database,
+        bigIntAsNumber: true
     });
 
     client.db = await pool.getConnection();
@@ -20,4 +20,16 @@ module.exports = async (client) => {
                 [guild.id, guild.id]).catch(console.error);
         });
     });
+
+    const pool2 = mariadb.createPool({
+        host: config.databases[1].host,
+        user: config.databases[1].user,
+        password: config.databases[1].password,
+        database: config.databases[1].database,
+        bigIntAsNumber: true
+    });
+
+    client.arcaneDb = await pool2.getConnection();
+
+    console.log('[INFO] Arcane Database connection established!');
 };
