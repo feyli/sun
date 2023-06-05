@@ -20,6 +20,7 @@
     "ffmpeg-static": "^5.1.0",
     "jimp": "^0.22.8",
     "mariadb": "^3.1.1",
+    "minecraft-motd-util": "^1.1.12",
     "minecraft-status": "^1.1.0",
     "mongoose": "^7.0.3",
     "ms": "^2.1.3",
