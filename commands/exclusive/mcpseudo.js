@@ -35,7 +35,7 @@ module.exports = {
     run: async (client, interaction) => {
         await interaction.deferReply({ ephemeral: false });
 
-        const db = client.db;
+        const db = client.arcaneDb;
 
         const subcommand = interaction.options.getSubcommand();
 
