@@ -20,19 +20,18 @@ module.exports = {
     cooldown: 2000,
     guild_id: '1108029635096223814',
     run: async (client, interaction) => {
-        const db = client.db;
-        const arcaneDb = client.arcaneDb;
+        const db = client.arcaneDb;
 
         await interaction.deferReply({ ephemeral: false });
 
         const userId = interaction.options.getUser('player')?.id || interaction.user.id;
 
-        const [result] = await db.query('SELECT player_uuid FROM arcane_players WHERE user_id = ?', [userId]);
+        const [result] = await db.query('SELECT player_uuid FROM players WHERE user_id = ?', [userId]);
         if (!result && interaction.options.getUser('player')) return interaction.editReply(`This player didn't link their Minecraft profile to their Discord profile.`);
         else if (!result) return interaction.editReply(`Your Minecraft profile isn't linked to your Discord profile.`);
         const playerUuid = result.player_uuid;
 
-        const [row] = await arcaneDb.query('SELECT points, level, points_until_next FROM levels WHERE player_uuid = ?', [playerUuid]);
+        const [row] = await db.query('SELECT points, level, points_until_next FROM levels WHERE player_uuid = ?', [playerUuid]);
 
         if (!row) return interaction.editReply('This player is not in my database because they haven\'t played more than a minute in a row. **Is this wrong? Contact us!**');
 
