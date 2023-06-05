@@ -2,6 +2,6 @@
   "name": "motd-to-img",
   "version": "1.0.0",
   "dependencies": {
-    "minecraft-motd-util": "github:feyli/minecraft-motd-util"
+    "minecraft-motd-util": "minecraft-motd-util"
   }
 }
