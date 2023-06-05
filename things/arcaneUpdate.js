@@ -5,7 +5,7 @@ const client = require('../index');
 const { ChannelType } = require("discord.js");
 
 module.exports = async () => {
-    const db = client.db;
+    const db = client.arcaneDb;
     const guild = client.guilds.cache.get('1108029635096223814');
     const inGameRole = guild.roles.cache.get('1108870536391565422');
     const playerRole = guild.roles.cache.get('1108036097335894026');
@@ -13,7 +13,7 @@ module.exports = async () => {
 
     if (!guild || !inGameRole || !playerRole || !category) return console.log('Arcane Update: Something went wrong. (guild, inGameRole, playerRole, category)');
 
-    const players = await db.query('SELECT user_id, REPLACE(player_uuid, \'-\', \'\') AS player_uuid FROM arcane_players');
+    const players = await db.query('SELECT user_id, REPLACE(player_uuid, \'-\', \'\') AS player_uuid FROM players');
 
     try {
         const res = await mslp.ping(4, '88.170.151.90', 32768);
