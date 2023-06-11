@@ -13,7 +13,7 @@ module.exports = async () => {
 
     if (!guild || !inGameRole || !playerRole || !category) return console.log('Arcane Update: Something went wrong. (guild, inGameRole, playerRole, category)');
 
-    const players = await db.query('SELECT user_id, REPLACE(player_uuid, \'-\', \'\') AS player_uuid FROM players');
+    const players = await db.query('SELECT user_id, REPLACE(player_uuid, \'-\', \'\') AS player_uuid FROM players WHERE user_id IS NOT NULL');
 
     try {
         const res = await mslp.ping(4, '88.170.151.90', 32768);
@@ -45,6 +45,7 @@ module.exports = async () => {
                 await member.roles.add(playerRole);
                 if (member.manageable) await member.setNickname(sample.find((p) => p.id === player.player_uuid).name, 'minecraft username check');
             } else {
+                if (!guild.members.cache.get(player.user_id)) continue;
                 await guild.members.cache.get(player.user_id).roles.remove(inGameRole);
             }
         }
