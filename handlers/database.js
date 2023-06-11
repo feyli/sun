@@ -11,7 +11,6 @@ module.exports = async (client) => {
     });
 
     client.db = await pool.getConnection();
-
     console.log('[INFO] Database connection established!');
 
     client.on('ready', async () => {
@@ -30,6 +29,11 @@ module.exports = async (client) => {
     });
 
     client.arcaneDb = await pool2.getConnection();
-
     console.log('[INFO] Arcane Database connection established!');
+
+    // add repeating keepAlive to both databases
+    setInterval(async () => {
+        await client.db.query('SELECT 1');
+        await client.arcaneDb.query('SELECT 1');
+    });
 };
