@@ -70,7 +70,7 @@ module.exports = {
                 },
                 {
                     name: "Last played",
-                    value: `<t:${Math.floor((await db.query('SELECT last_played FROM players WHERE player_uuid = ?', [playerUuid]))[0].first_played / 1000)}:R>`
+                    value: `<t:${Math.floor((await db.query('SELECT last_played FROM players WHERE player_uuid = ?', [playerUuid]))[0].last_played / 1000)}:R>`
                 }
             ])
             .setFooter({
