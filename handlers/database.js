@@ -35,5 +35,5 @@ module.exports = async (client) => {
     setInterval(async () => {
         await client.db.query('SELECT 1');
         await client.arcaneDb.query('SELECT 1');
-    });
+    }, 15000);
 };
