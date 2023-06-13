@@ -37,7 +37,9 @@ module.exports = {
 
         const { name: MCUsername } = await fetch('https://api.mojang.com/user/profile/' + playerUuid).then(res => res.json()).catch(() => null);
 
-        const totalPlaytime = await db.query('SELECT total_playtime FROM players WHERE player_uuid = ?', [playerUuid]).then(res => res[0].total_playtime);
+        const [player] = await db.query('SELECT total_playtime, UNIX_TIMESTAMP(last_played) AS last_played FROM players WHERE player_uuid = ?', [playerUuid]);
+        const totalPlaytime = player.total_playtime;
+        const lastPlayed = player.last_played;
         // format seconds in hours, minutes and seconds (only show hours if there are any, same for minutes) and show an s if there is only one hour/minute/second
         const hours = Math.floor(totalPlaytime / 3600);
         const minutes = Math.floor((totalPlaytime % 3600) / 60);
@@ -70,7 +72,7 @@ module.exports = {
                 },
                 {
                     name: "Last played",
-                    value: `<t:${Math.floor((await db.query('SELECT last_played FROM players WHERE player_uuid = ?', [playerUuid]))[0].last_played / 1000)}:R>`
+                    value: Math.floor(Date.now() / 1000) - lastPlayed < 5 ? ":green_circle: Now" : `<t:${lastPlayed}:R>`
                 }
             ])
             .setFooter({
