@@ -3,6 +3,7 @@
 const { MinecraftServerListPing: mslp } = require("minecraft-status");
 const client = require('../index');
 const { ChannelType } = require("discord.js");
+const util = require('util');
 
 module.exports = async () => {
     const db = client.arcaneDb;
@@ -36,16 +37,20 @@ module.exports = async () => {
             });
         }
 
+        console.log("Sample:" + util.inspect(sample, false, null, true));
+
         category.children.cache.filter((c) => !sample.find(p => p.name === c.name)).forEach((c) => c.delete());
 
         for (const player of players) {
             if (sample.find(p => p.id === player.player_uuid) && guild.members.cache.get(player.user_id).presence && guild.members.cache.get(player.user_id).presence.status !== 'offline') {
                 const member = guild.members.cache.get(player.user_id);
+                console.log(member.user.username);
                 await member.roles.add(inGameRole);
                 await member.roles.add(playerRole);
                 if (member.manageable) await member.setNickname(sample.find((p) => p.id === player.player_uuid).name, 'minecraft username check');
             } else {
                 if (!guild.members.cache.get(player.user_id)) continue;
+                console.log(guild.members.cache.get(player.user_id).user.username);
                 await guild.members.cache.get(player.user_id).roles.remove(inGameRole);
             }
         }
