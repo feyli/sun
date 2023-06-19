@@ -44,13 +44,13 @@ module.exports = async () => {
         for (const player of players) {
             if (sample.find(p => p.id === player.player_uuid) && guild.members.cache.get(player.user_id).presence && guild.members.cache.get(player.user_id).presence.status !== 'offline') {
                 const member = guild.members.cache.get(player.user_id);
-                console.log(member.user.username);
+                console.log(member.user.username + " is in the sample");
                 await member.roles.add(inGameRole);
                 await member.roles.add(playerRole);
                 if (member.manageable) await member.setNickname(sample.find((p) => p.id === player.player_uuid).name, 'minecraft username check');
             } else {
                 if (!guild.members.cache.get(player.user_id)) continue;
-                console.log(guild.members.cache.get(player.user_id).user.username);
+                console.log(guild.members.cache.get(player.user_id).user.username + " is not in the sample");
                 await guild.members.cache.get(player.user_id).roles.remove(inGameRole);
             }
         }
