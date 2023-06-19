@@ -75,11 +75,6 @@ module.exports = {
                     name: 'Address',
                     value: `${address}`,
                     inline: true
-                },
-                {
-                    name: 'Port',
-                    value: `${port}`,
-                    inline: true
                 }
             ])
             .setFooter({
