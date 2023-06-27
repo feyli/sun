@@ -43,7 +43,7 @@ module.exports = {
   run: async (client, interaction) => {
     await interaction.deferReply({ ephemeral: true });
     let commands = client.commands.filter((command) => command.command_data.type === 1 && !command.owner_only &&
-      (!command.guild_id || command.guild_id === interaction.guild.id)).map((command) => {
+      (!command.guild_id || !interaction.guild.id || command.guild_id === interaction.guild.id)).map((command) => {
       return {
         name: command.command_data.name,
         description: command.command_data.description,
