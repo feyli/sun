@@ -95,7 +95,7 @@ module.exports = {
       await interaction.editReply({ embeds: [embed] });
     } else {
       let categories = commands.filter(
-        (command) => command.guild_id === interaction.guild.id || !interaction.guild_id).
+        (command) => command.guild_id === interaction.guild?.id || !interaction.guild_id).
         map((command) => command.category);
       categories = [...new Set(categories)];
       let embeds = [];
