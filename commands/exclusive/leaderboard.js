@@ -22,7 +22,7 @@ module.exports = {
 
         const limit = interaction.options.getBoolean('full') ? 15 : 3;
 
-        const res = await db.query("SELECT player_uuid, points, level, user_id FROM levels LEFT JOIN players USING (player_uuid) ORDER BY points DESC LIMIT ?", [limit]);
+        const res = await db.query("SELECT player_uuid, player_name, points, level, user_id FROM levels LEFT JOIN players USING (player_uuid) ORDER BY points DESC LIMIT ?", [limit]);
         if (res.length === 0) return interaction.editReply("There doesn't seem to be any player in the database.");
 
         const embed = {
@@ -37,12 +37,11 @@ module.exports = {
         };
 
         for (const player of res) {
-            if (!player.user_id) {
-                const res = await fetch("https://api.mojang.com/user/profile/" + player.player_uuid).then(res => res.json()).catch(() => null);
-                player.username = res?.name;
+            if (!player.user_id && !player.name) {
+                const res = await fetch("https://sessionserver.mojang.com/session/minecraft/profile/" + player.player_uuid).then(res => res.json()).catch(() => null);
+                player.name = res?.name;
             }
-
-            embed.description += `**${(res.indexOf(player) + 1)}.** ${player.user_id ? interaction.guild.members.cache.get(player.user_id) : player.username}\n<:transparent:1115365589297397771>➥ **Level ${player.level}** (${player.points} points)\n`
+            embed.description += `**${(res.indexOf(player) + 1)}.** ${player.user_id ? interaction.guild.members.cache.get(player.user_id) : player.name}\n<:transparent:1115365589297397771>➥ **Level ${player.level}** (${player.points} points)\n`
         }
 
         await interaction.editReply({ embeds: [embed] });

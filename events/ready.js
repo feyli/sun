@@ -35,4 +35,7 @@ client.on('ready', async () => {
     setInterval(() => {
         require('../things/minecraftCounter')();
     }, 900000);
+    setInterval(() => {
+        require('../things/playerNamesUpdate')();
+    }, 43200000)
 });
