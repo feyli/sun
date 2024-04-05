@@ -37,11 +37,12 @@ module.exports = {
         };
 
         for (const player of res) {
-            if (!player.user_id && !player.name) {
+            if (!player.user_id && !player.player_name) {
                 const res = await fetch("https://sessionserver.mojang.com/session/minecraft/profile/" + player.player_uuid).then(res => res.json()).catch(() => null);
                 player.name = res?.name;
             }
-            embed.description += `**${(res.indexOf(player) + 1)}.** ${player.user_id ? interaction.guild.members.cache.get(player.user_id) : player.name}\n<:transparent:1115365589297397771>➥ **Level ${player.level}** (${player.points} points)\n`
+            player.name = player.player_name;
+            embed.description += `**${(res.indexOf(player) + 1)}.** ${player.user_id ? interaction.guild.members.cache.get(player.user_id) || player.name : player.name}\n<:transparent:1115365589297397771>➥ **Level ${player.level}** (${player.points} points)\n`
         }
 
         await interaction.editReply({ embeds: [embed] });
