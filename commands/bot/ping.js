@@ -24,8 +24,8 @@ module.exports = {
     }
 
     const now = Date.now()
-    await interaction.deferReply()
+    await interaction.deferReply();
     await interaction.editReply(
-      `${locales[interaction.locale] ?? 'Pong!'} \`${Date.now() - now}ms\``)
+      `${locales[interaction.locale] ?? 'Pong!'} \`${Date.now() - now}ms\``);
   },
 }
