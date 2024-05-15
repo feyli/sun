@@ -7,7 +7,8 @@ module.exports = {
         name: 'warn',
         description: 'Set of commands for warns.',
         type: 1,
-        dm_permission: false,
+        integration_types: [0],
+        contexts: [0],
         options: [
             {
                 name: 'add',

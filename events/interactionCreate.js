@@ -32,7 +32,7 @@ client.on('interactionCreate', async (interaction) => {
         // final run
         client.commands.get(interaction.commandName).run(client, interaction, config);
 
-        client.db.query('INSERT INTO command_logs (interaction_token, user_id, user_username, guild_id, guild_name, channel_id, channel_name, command_name, options, dm, locale) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [interaction.token, interaction.user.id, interaction.user.username, interaction.guild?.id || null, interaction.guild?.name || null, interaction.channel.id, interaction.channel.name || null, interaction.commandName, interaction.options.data.length > 0 ? JSON.stringify(interaction.options.data) : null, !interaction.inGuild(), interaction.locale]).catch(console.error);
+        client.db.query('INSERT INTO command_logs (interaction_token, user_id, user_username, guild_id, guild_name, channel_id, channel_name, command_name, options, dm, locale) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [interaction.token, interaction.user.id, interaction.user.username, interaction.guildId || null, interaction.guild?.name || null, interaction.channelId, interaction.channel?.name || null, interaction.commandName, interaction.options.data.length > 0 ? JSON.stringify(interaction.options.data) : null, !interaction.inGuild(), interaction.locale]).catch(console.error);
     } else if (interaction.isMessageContextMenuCommand()) {
         if (!client.commands.has(interaction.commandName)) return interaction.reply(
             { content: 'This command is in development phase!', ephemeral: true });

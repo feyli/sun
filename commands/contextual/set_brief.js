@@ -1,11 +1,11 @@
-const {ActionRowBuilder, ButtonBuilder, ModalBuilder, TextInputBuilder} = require('discord.js');
+const { ActionRowBuilder, ButtonBuilder, ModalBuilder, TextInputBuilder } = require('discord.js');
 
 module.exports = {
     command_data: {
         name: 'Set Mission Brief',
         type: 3,
         default_member_permissions: 8,
-        dm_permission: false,
+        contexts: [0]
     },
     guild_id: '1097431302338256977',
     run: async (client, interaction) => {

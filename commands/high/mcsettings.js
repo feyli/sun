@@ -94,7 +94,7 @@ module.exports = {
                 const guild = await db.query(
                     'SELECT * FROM mcstatus WHERE guild_id = ? AND address IS NOT NULL',
                     [interaction.guild.id]).then((res) => res[0]);
-                if (!guild) return interaction.editReply('No Minecraft server has been set up in this server! Use `/mcsettings set` to set one up.')
+                if (!guild) return interaction.editReply('No Minecraft server has been set up in this server! Use `/mcsettings set` to set one up.');
                 const dbChannelID = guild.counter_channel_id;
 
                 let counterChannel = interaction.guild.channels.cache.get(dbChannelID);

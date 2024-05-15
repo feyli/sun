@@ -3,6 +3,8 @@ module.exports = {
         name: 'test',
         description: 'Test command.',
         type: 1,
+        integration_types: [0, 1],
+        contexts: [0, 1, 2],
         options: []
     },
     owner_only: true,

@@ -3,7 +3,8 @@ module.exports = {
         name: 'status',
         description: 'Displays the bot\'s status.',
         type: 1,
-        dm_permission: false,
+        integration_types: [0],
+        contexts: [0],
         default_member_permissions: 16,
         options: [
             {

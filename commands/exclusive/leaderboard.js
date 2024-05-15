@@ -42,7 +42,7 @@ module.exports = {
                 player.name = res?.name;
             }
             player.name = player.player_name;
-            embed.description += `**${(res.indexOf(player) + 1)}.** ${player.user_id ? interaction.guild.members.cache.get(player.user_id) || player.name : player.name}\n<:transparent:1115365589297397771>➥ **Level ${player.level}** (${player.points} points)\n`
+            embed.description += `**${(res.indexOf(player) + 1)}.** ${player.user_id ? interaction.guild.members.cache.get(player.user_id) || player.name : player.name}\n<:transparent:1115365589297397771>➥ **Level ${player.level}** (${player.points} points)\n`;
         }
 
         await interaction.editReply({ embeds: [embed] });

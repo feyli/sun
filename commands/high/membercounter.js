@@ -6,7 +6,8 @@ module.exports = {
         description: 'Member counter-related commands.',
         type: 1,
         default_member_permissions: 16,
-        dm_permission: false,
+        integration_types: [0],
+        contexts: [0],
         options: [
             {
                 name: 'enable',
