@@ -53,7 +53,7 @@ module.exports = {
             await interaction.editReply({ embeds: [{ description: 'Deleted ' + amount + ' messages from ' + user.toString() + '.' }] });
         } else {
             await interaction.channel.bulkDelete(amount, true);
-            await interaction.editReply({ embeds: [{ description: 'Deleted ' + amount + ' messages.' }] });
+            await interaction.editReply({ embeds: [{ description: 'Deleted ' + amount + ' messages. Please note that some messages might have escaped the deletion if they\'re any older than 2 weeks.' }] });
         }
 
         setTimeout(() => {
