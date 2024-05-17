@@ -4,7 +4,7 @@ module.exports = {
     command_data: {
         name: 'Set Mission Brief',
         type: 3,
-        default_member_permissions: 8,
+        integration_types: [0],
         contexts: [0]
     },
     guild_id: '1097431302338256977',
