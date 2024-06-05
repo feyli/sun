@@ -84,6 +84,7 @@ module.exports = {
 
         let response = await openai.chat.completions.create(params);
         response = response.choices[0].message.content;
+
         await interaction.editReply({
             embeds: [
                 {
@@ -93,6 +94,7 @@ module.exports = {
                         icon_url: interaction.user.displayAvatarURL({ dynamic: true }),
                     },
                     color: 0x239FDF,
+                    image: attachment ? { url: attachment.url } : null,
                 },
                 {
                     description: response,
