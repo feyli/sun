@@ -92,15 +92,15 @@ module.exports = {
                         name: interaction.user.username,
                         icon_url: interaction.user.displayAvatarURL({ dynamic: true }),
                     },
-                    color: 0x000000,
+                    color: 0x239FDF,
                 },
                 {
                     description: response,
                     author: {
                         name: 'Sun',
                         icon_url: client.user.displayAvatarURL({ dynamic: true }),
-                        color: 0x000000,
-                    }
+                    },
+                    color: 0xB6BABB,
                 }
             ]
         });
