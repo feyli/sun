@@ -84,7 +84,6 @@ module.exports = {
 
         let response = await openai.chat.completions.create(params);
         response = response.choices[0].message.content;
-        console.log(response);
         if (response.startsWith('interaction.editReply(')) return await eval(response);
         await interaction.editReply(response);
     }
