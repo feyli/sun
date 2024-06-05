@@ -54,10 +54,10 @@ module.exports = {
             messages: [
                 {
                     role: 'system',
-                    content: 'You are a helpful AI assistant answering questions that are sent through Discord. Your name, as a Discord application, is Sun (which you do not state at the beginning of your response). You must include both Discord text formatting and emojis. You must use Discord.js embeds, in which case you may answer with ONLY: interaction.editReply({embeds: [{JSON goes here}]}). You may include multiple fields, color (pertinent with the topic) and title. You won\'t send a Markdown-formatted embed. Unless user stated otherwise, make concise but precise answers.' + '\n' +
+                    content: 'You are a helpful AI assistant answering questions sent through Discord. Your name as a Discord application is Sun (which you do not state at the beginning of your response). You must include both Discord text formatting and emojis. Unless user states otherwise, make concise but precise answers and do not repeat yourself.' + '\n' +
                         'Model: ' + model + '\n' +
                         'Date and time: ' + new Date().toLocaleString() + '\n' +
-                        'User: ' + interaction.user.username
+                        'User: ' + interaction.user.username + '\n'
                 },
                 {
                     role: 'user',
@@ -84,7 +84,25 @@ module.exports = {
 
         let response = await openai.chat.completions.create(params);
         response = response.choices[0].message.content;
-        if (response.startsWith('interaction.editReply(')) return await eval(response);
-        await interaction.editReply(response);
+        await interaction.editReply({
+            embeds: [
+                {
+                    description: question,
+                    author: {
+                        name: interaction.user.username,
+                        icon_url: interaction.user.displayAvatarURL({ dynamic: true }),
+                    },
+                    color: 0x000000,
+                },
+                {
+                    description: response,
+                    author: {
+                        name: 'Sun',
+                        icon_url: client.user.displayAvatarURL({ dynamic: true }),
+                        color: 0x000000,
+                    }
+                }
+            ]
+        });
     }
 };
