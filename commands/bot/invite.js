@@ -1,6 +1,7 @@
 module.exports = {
     command_data: {
-        name: 'Invite',
+        name: 'invite',
+        description: 'I\'ll write a cool message to let people know how to add me.',
         type: 1,
         integration_types: [0, 1],
         contexts: [0, 1, 2]
