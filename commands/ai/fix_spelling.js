@@ -42,10 +42,12 @@ module.exports = {
                 {
                     title: "Original Text",
                     description: crossedText,
+                    color: 0xFF6961,
                 },
                 {
                     title: "Corrected Text",
                     description: highlightedText,
+                    color: 0x77DD77,
                 },
             ]
         });
