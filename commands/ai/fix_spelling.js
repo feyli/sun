@@ -31,7 +31,7 @@ module.exports = {
                     content: text
                 }
             ],
-            temperature: 0.5,
+            temperature: 0.4,
             top_p: 1,
         });
         response = response.choices[0].message.content;
