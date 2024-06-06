@@ -23,7 +23,7 @@ module.exports = {
                         "Improved readability\n" +
                         "Identify and fix technical errors, then review again for any missed mistakes. Use verified language conventions. Preserve the original meaning without adding unnecessary language.\n" +
                         "Your ultimate goal is to produce the optimal version of the text grammatically while retaining the same style and meaning. Immediately begin proofreading and editing when provided with the essay.\n" +
-                        "Check, review, and correct my grammar. Do not correct style issues. Focus on identifying and correcting common grammatical mistakes, such as punctuation errors, subject-verb agreement issues, and improper use of tenses. Maintain the original tone and style, avoiding assumptions about the intended meaning. Reply with the corrected version of the text, without any comment."
+                        "Check, review, and correct my grammar. Do not correct style issues. Focus on identifying and correcting common grammatical mistakes, such as major punctuation errors, subject-verb agreement issues, and improper use of tenses. Maintain the original tone and style, avoiding assumptions about the intended meaning. Reply with the corrected version of the text, without any comment."
                 },
                 {
                     role: "user",
