@@ -3,6 +3,7 @@ const config = require('../config/main');
 
 client.on('interactionCreate', async (interaction) => {
     const identifier = interaction.commandName || interaction.customId;
+    console.log("Identifier: " + identifier);
 
     // command checking
     if (!client.commands.has(identifier)) return interaction.reply(
@@ -15,12 +16,12 @@ client.on('interactionCreate', async (interaction) => {
 
     // cooldown checking
     if (client.commands.get(identifier).cooldown !== 0 && interaction.user.id.toString() !== config.users.owner) {
+        console.log("Command has a cooldown and user is not the owner.");
         if (client.cooldowns.get(identifier).get(interaction.user.id)) {
             return interaction.reply({
                 content: 'You are on cooldown! This command has a cooldown of `' +
                     client.commands.get(identifier).cooldown / 1000 + 's`.', ephemeral: true,
             });
-
         } else {
             client.cooldowns.get(identifier).set(interaction.user.id, true);
             setTimeout(() => {

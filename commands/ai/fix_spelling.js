@@ -7,10 +7,11 @@ module.exports = {
         type: 3,
         integration_types: [0, 1],
         contexts: [0, 1, 2],
-        cooldown: 60000,
     },
-    run: async (client, interaction) => {
+    cooldown: 60000,
+    run: async (client, interaction, config) => {
         const text = interaction.targetMessage.content;
+        if ((text.length < 4 || text.length > 1000) && interaction.user.id.toString() !== config.users.owner) return interaction.reply({ content: 'The text must be between 4 and 1000 characters.', ephemeral: true });
         const openai = new OpenAI({ apiKey: process.env.OPENAIKEY });
         await interaction.deferReply({ ephemeral: false });
         let response = await openai.chat.completions.create({
