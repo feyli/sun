@@ -6,7 +6,8 @@ module.exports = {
         name: 'Fix Spelling',
         type: 3,
         integration_types: [0, 1],
-        contexts: [0, 1, 2]
+        contexts: [0, 1, 2],
+        cooldown: 60000,
     },
     run: async (client, interaction) => {
         const text = interaction.targetMessage.content;
