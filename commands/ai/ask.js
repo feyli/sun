@@ -78,16 +78,15 @@ module.exports = {
             },);
         }
 
-        const thread = await openai.beta.threads.createAndRunPoll({
-            assistant_id: "asst_yCOmJA2njcZzjIoko4lrIJqI",
-            thread: {
-                messages: messages,
-            },
-            model: model,
-        });
-
-        let resMessages = await openai.beta.threads.messages.list(thread.thread_id);
-        const messageResponse = resMessages.data[0].content[0].text.value
+        const response = await new Promise((resolve) =>
+            openai.beta.threads.createAndRunStream({
+                assistant_id: "asst_yCOmJA2njcZzjIoko4lrIJqI",
+                thread: {
+                    messages: messages,
+                },
+                model: model,
+            }).on('textDone', (text) => resolve(text.value))
+        );
 
         await interaction.editReply({
             embeds: [
@@ -101,7 +100,7 @@ module.exports = {
                     image: attachment ? { url: attachment.url } : null,
                 },
                 {
-                    description: messageResponse,
+                    description: response,
                     author: {
                         name: 'Sun',
                         icon_url: client.user.displayAvatarURL({ dynamic: true }),
