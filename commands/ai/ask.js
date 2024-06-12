@@ -50,30 +50,26 @@ module.exports = {
 
         const openai = new OpenAI({ apiKey: process.env.OPENAIKEY });
 
-        let params = {
-            messages: [
-                {
-                    role: 'system',
-                    content: 'You are a helpful AI assistant answering questions sent through Discord. Your name as a Discord application is Sun (which you do not state at the beginning of your response). You must include both Discord text formatting and emojis. Unless user states otherwise, make concise but precise answers and do not repeat yourself.' + '\n' +
-                        'Model: ' + model + '\n' +
-                        'Date and time: ' + new Date().toLocaleString() + '\n' +
-                        'User: ' + interaction.user.username + '\n'
-                },
-                {
-                    role: 'user',
-                    content: [
-                        {
-                            type: 'text',
-                            text: question,
-                        },
-                    ],
-                },
-            ],
-            model: model,
-        };
+        let messages = [
+            {
+                role: 'assistant',
+                content: 'Model: ' + model + '\n' +
+                    'Date and time: ' + new Date().toLocaleString() + '\n' +
+                    'User: ' + interaction.user.username
+            },
+            {
+                role: 'user',
+                content: [
+                    {
+                        type: 'text',
+                        text: question,
+                    },
+                ],
+            },
+        ];
 
         if (attachment) {
-            params.messages[1].content.push({
+            messages[1].content.push({
                 type: 'image_url',
                 image_url: {
                     url: attachment.url,
@@ -82,8 +78,16 @@ module.exports = {
             },);
         }
 
-        let response = await openai.chat.completions.create(params);
-        response = response.choices[0].message.content;
+        const thread = await openai.beta.threads.createAndRunPoll({
+            assistant_id: "asst_yCOmJA2njcZzjIoko4lrIJqI",
+            thread: {
+                messages: messages,
+            },
+            model: model,
+        });
+
+        let resMessages = await openai.beta.threads.messages.list(thread.thread_id);
+        const messageResponse = resMessages.data[0].content[0].text.value
 
         await interaction.editReply({
             embeds: [
@@ -97,7 +101,7 @@ module.exports = {
                     image: attachment ? { url: attachment.url } : null,
                 },
                 {
-                    description: response,
+                    description: messageResponse,
                     author: {
                         name: 'Sun',
                         icon_url: client.user.displayAvatarURL({ dynamic: true }),
