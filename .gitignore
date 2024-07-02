@@ -131,3 +131,5 @@ dist
 /config/main.js
 /ecosystem.config.js
 /motd-to-img/package-lock.json
+
+.DS_Store
