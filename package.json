@@ -1,7 +1,7 @@
 {
   "name": "sunbot",
   "version": "1.0.0",
-  "description": "My Discord personal bot",
+  "description": "My personal Discord bot",
   "main": "index.js",
   "keywords": [],
   "author": "Feyli",
