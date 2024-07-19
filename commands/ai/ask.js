@@ -15,7 +15,7 @@ module.exports = {
                 required: true,
             },
             {
-                name: 'not-mini',
+                name: 'regular-gpt-4o',
                 description: 'Use regular GPT-4o?',
                 type: 5,
                 required: false,
@@ -33,7 +33,7 @@ module.exports = {
     owner_only: true,
     run: async (client, interaction) => {
         const attachment = interaction.options.getAttachment('attachment');
-        const model = interaction.options.getString('model') || 'gpt-4o-mini';
+        const model = interaction.options.getBoolean('regular-gpt-4o') ? 'gpt-4o' : 'gpt-4o-mini';
         const question = interaction.options.getString('question');
 
         await interaction.deferReply({ ephemeral: false });
