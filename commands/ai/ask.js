@@ -15,20 +15,10 @@ module.exports = {
                 required: true,
             },
             {
-                name: 'model',
-                description: 'The model to use.',
-                type: 3,
+                name: 'not-mini',
+                description: 'Use regular GPT-4o?',
+                type: 5,
                 required: false,
-                choices: [
-                    {
-                        name: 'GPT-3.5 Turbo',
-                        value: 'gpt-3.5-turbo',
-                    },
-                    {
-                        name: 'GPT-4o',
-                        value: 'gpt-4o',
-                    },
-                ],
             },
             {
                 name: 'attachment',
@@ -43,6 +33,7 @@ module.exports = {
     owner_only: true,
     run: async (client, interaction) => {
         const attachment = interaction.options.getAttachment('attachment');
+        const model = interaction.options.getString('model') || 'gpt-4o-mini';
         const question = interaction.options.getString('question');
 
         await interaction.deferReply({ ephemeral: false });
@@ -52,7 +43,7 @@ module.exports = {
         let messages = [
             {
                 role: 'assistant',
-                content: 'Model: ' + 'gpt-4o mini' + '\n' +
+                content: 'Model: ' + model + '\n' +
                     'Date and time: ' + new Date().toLocaleString() + '\n' +
                     'User: ' + interaction.user.username
             },
@@ -83,6 +74,7 @@ module.exports = {
                 thread: {
                     messages: messages,
                 },
+                model: model,
             }).on('textDone', (text) => resolve(text.value))
         );
 
