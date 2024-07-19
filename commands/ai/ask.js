@@ -43,7 +43,6 @@ module.exports = {
     owner_only: true,
     run: async (client, interaction) => {
         const attachment = interaction.options.getAttachment('attachment');
-        const model = attachment ? 'gpt-4o' : interaction.options.getString('model') || 'gpt-3.5-turbo';
         const question = interaction.options.getString('question');
 
         await interaction.deferReply({ ephemeral: false });
@@ -53,7 +52,7 @@ module.exports = {
         let messages = [
             {
                 role: 'assistant',
-                content: 'Model: ' + model + '\n' +
+                content: 'Model: ' + 'gpt-4o mini' + '\n' +
                     'Date and time: ' + new Date().toLocaleString() + '\n' +
                     'User: ' + interaction.user.username
             },
@@ -84,7 +83,6 @@ module.exports = {
                 thread: {
                     messages: messages,
                 },
-                model: model,
             }).on('textDone', (text) => resolve(text.value))
         );
 
