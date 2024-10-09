@@ -9,6 +9,9 @@
   "engines": {
     "node": ">=16.9.0"
   },
+  "scripts": {
+    "start": "node index.js"
+  },
   "dependencies": {
     "@discordjs/voice": "^0.16.0",
     "@types/node-fetch": "^2.6.4",
