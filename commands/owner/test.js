@@ -13,6 +13,6 @@ module.exports = {
     run: async (client, interaction) => {
         await interaction.deferReply({ ephemeral: false });
 
-        await interaction.editReply("<@738852700816670822>");
+        await interaction.editReply("738852700816670822");
     }
 };

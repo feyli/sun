@@ -30,7 +30,7 @@ module.exports = {
             { ephemeral: interaction.options.get('ephemeral') || false },
         );
         if (code.includes('interaction.reply(') || code.includes('interaction.deferReply(')) return await interaction.editReply({ content: "Hey, what you tryna do here? Hopefully I didn't run that cause it would have most likely crashed the whole thing!" });
-        if (code.includes('interaction.editReply(')) return await interaction.editReply({ content: "I mean... I can try to edit my reply as you wish so but you'll most likely not see it as I will overwrite that real quickly... Kinda pointless, man."});
+        if (code.includes('interaction.editReply(')) return await interaction.editReply({ content: "I mean... I can try to edit my reply as you wish but you'll most likely not see it as I will overwrite that real quickly... Kinda pointless, man."});
         let result;
         try {
             const wrapperFn = new Function('client', 'interaction',
