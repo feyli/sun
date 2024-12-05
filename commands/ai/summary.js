@@ -10,7 +10,7 @@ module.exports = {
     cooldown: 60000,
     run: async (client, interaction, config) => {
         const text = interaction.targetMessage.content;
-        if ((text.length < 4) && interaction.user.id.toString() !== config.users.owner) return interaction.reply({ content: 'The text must be at least 4 characters long.', ephemeral: true }) && client.cooldowns.get(interaction.commandName).delete(interaction.user.id);
+        if ((text.length < 100) && interaction.user.id.toString() !== config.users.owner) return interaction.reply({ content: 'The text must be at least 4 characters long.', ephemeral: true }) && client.cooldowns.get(interaction.commandName).delete(interaction.user.id);
         const openai = new OpenAI({ apiKey: process.env.OPENAIKEY });
         await interaction.deferReply({ ephemeral: false });
         const response = await new Promise((resolve) => openai.beta.threads.createAndRunStream({
