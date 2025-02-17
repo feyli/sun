@@ -3,7 +3,6 @@
 const { AttachmentBuilder, EmbedBuilder } = require("discord.js");
 const mslp = require('minecraft-status').MinecraftServerListPing;
 const net = require('net');
-const motdToImg = require('../../motd-to-img/index');
 
 module.exports = {
     command_data: {
@@ -103,11 +102,6 @@ module.exports = {
                         inline: true
                     }
                 ]);
-            await interaction.editReply({ embeds: [embed], files: files });
-            const motdImage = await motdToImg(res.description);
-            const motdBanner = new AttachmentBuilder(motdImage, { name: 'motd.png' });
-            embed.setImage('attachment://motd.png');
-            files.push(motdBanner);
         }
 
         // only include attachment if not null
