@@ -22,20 +22,20 @@ module.exports = {
     category: 'Bot',
     cooldown: 3000,
     run: async (client, interaction) => {
-        const db = client.db;
+        const pool = client.sunPool;
 
         await interaction.deferReply({ ephemeral: false });
         const subcommand = interaction.options.getSubcommand();
 
         if (subcommand === 'membercounter') {
             // noinspection JSUnresolvedVariable
-            let dbChannelID = await db.query(
+            let dbChannelID = await pool.query(
                 'SELECT member_counter_channel_id FROM guilds WHERE guild_id = ?', [interaction.guild.id]).then((res) => res[0].member_counter_channel_id);
             const counterChannel = interaction.guild.channels.cache.get(dbChannelID);
 
             // noinspection DuplicatedCode
             if (dbChannelID && !counterChannel) {
-                db.query(
+                pool.query(
                     'UPDATE guilds SET member_counter_channel_id = NULL, member_counter_style = NULL WHERE guild_id = ?',
                     [interaction.guild.id]);
                 dbChannelID = null;
@@ -71,7 +71,7 @@ module.exports = {
                     },
                     {
                         name: 'Custom Style',
-                        value: await db.query(
+                        value: await pool.query(
                             'SELECT member_counter_style FROM guilds WHERE guild_id = ?',
                             [interaction.guild.id]).then((res) => res[0].member_counter_style) ?? 'None',
                         inline: true,
@@ -83,13 +83,13 @@ module.exports = {
 
         if (subcommand === 'welcome') {
             // noinspection JSUnresolvedVariable
-            let dbChannelID = await db.query(
+            let dbChannelID = await pool.query(
                 'SELECT welcome_channel_id FROM guilds WHERE guild_id = ?', [interaction.guild.id]).then((res) => res[0].welcome_channel_id);
             let welcomeChannel = interaction.guild.channels.cache.get(dbChannelID);
 
             // noinspection DuplicatedCode
             if (dbChannelID && !welcomeChannel) {
-                db.query(
+                pool.query(
                     'UPDATE guilds SET welcome_channel_id = ? WHERE guild_id = ?',
                     [null, interaction.guild.id]);
                 dbChannelID = null;
@@ -120,7 +120,7 @@ module.exports = {
                     },
                     {
                         name: 'Custom Message',
-                        value: await db.query(
+                        value: await pool.query(
                             'SELECT welcome_message FROM guilds WHERE guild_id = ?',
                             [interaction.guild.id]).then((res) => res[0].welcome_message) ?? 'None',
                         inline: true,

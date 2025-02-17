@@ -5,7 +5,7 @@ module.exports = {
     type: 'button',
     run: async (client, interaction) => {
         // noinspection DuplicatedCode
-        const db = client.db;
+        const conn = client.sunPool.getConnection();
 
         if (!interaction.memberPermissions.has(8)) return interaction.reply(
             { content: 'You do not have permission to use this command.', ephemeral: true });
@@ -13,7 +13,7 @@ module.exports = {
         await interaction.deferReply({ ephemeral: true });
 
         // noinspection JSUnresolvedVariable
-        const briefChannel = await db.query('SELECT brief_channel FROM guilds WHERE guild_id = ?',
+        const briefChannel = await conn.query('SELECT brief_channel FROM guilds WHERE guild_id = ?',
             [interaction.guild.id]).then((res) => res[0].brief_channel);
 
         if (!briefChannel) return interaction.editReply('The mission brief channel has not been set.');
@@ -24,7 +24,7 @@ module.exports = {
             'The mission brief channel has been deleted. You\'ll have to set a new one.');
 
         // noinspection JSUnresolvedVariable
-        const brief = await db.query('SELECT mission_brief FROM guilds WHERE guild_id = ?',
+        const brief = await conn.query('SELECT mission_brief FROM guilds WHERE guild_id = ?',
             [interaction.guild.id]).then((res) => res[0].mission_brief);
 
         if (!brief) return interaction.editReply(

@@ -18,9 +18,8 @@ module.exports = {
     cooldown: 5000,
     run: async (client, interaction) => {
         await interaction.deferReply();
-        const db = client.db;
 
-        const { address, port } = await db.query('SELECT address, port FROM mcstatus WHERE guild_id = ?', [interaction.guild.id]).then((res) => res[0]);
+        const { address, port } = await client.sunPool.query('SELECT address, port FROM mcstatus WHERE guild_id = ?', [interaction.guild.id]).then((res) => res[0]);
 
         if (!address) return interaction.editReply({ content: 'No Minecraft server has been set for this Discord server.', ephemeral: true });
 

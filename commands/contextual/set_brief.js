@@ -10,7 +10,7 @@ module.exports = {
     guild_id: '1097431302338256977',
     run: async (client, interaction) => {
         const date = Date.now().toString();
-        const db = client.db;
+        const pool = client.sunPool;
 
         // noinspection JSCheckFunctionSignatures
         const modal = new ModalBuilder().setCustomId('set_brief_modal_' + date).setTitle('Create a Mission Brief').setComponents(new ActionRowBuilder().setComponents(
@@ -34,7 +34,7 @@ module.exports = {
         });
         console.log(json);
 
-        db.query('UPDATE guilds SET mission_brief=? WHERE guild_id=?',
+        pool.query('UPDATE guilds SET mission_brief=? WHERE guild_id=?',
             [json, interaction.guild.id]).catch((err) => console.error(err));
 
         // noinspection JSCheckFunctionSignatures

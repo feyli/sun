@@ -45,13 +45,13 @@ module.exports = {
     async run(client, interaction) {
         await interaction.deferReply({ ephemeral: false });
 
-        const db = client.db;
+        const conn = client.sunPool.getConnection();
         const command = interaction.options.getSubcommand();
 
         if (command === 'enable' || command === 'disable' || command === 'rename' || command ===
             'status') {
             // noinspection JSUnresolvedVariable
-            let dbChannelID = await db.query(
+            let dbChannelID = await conn.query(
                 'SELECT member_counter_channel_id FROM guilds WHERE guild_id = ?',
                 [interaction.guild.id]).then((res) => res[0].member_counter_channel_id);
 
@@ -70,7 +70,7 @@ module.exports = {
                         type: ChannelType.GuildVoice,
                         permissionOverwrites: [{ id: interaction.guild.id, deny: '1048576' }],
                     });
-                db.query(
+                conn.query(
                     'UPDATE guilds SET member_counter_channel_id = ? WHERE guild_id = ?',
                     [channel.id, interaction.guild.id]);
                 await interaction.editReply(
@@ -79,7 +79,7 @@ module.exports = {
             if (command === 'disable') {
                 if (!dbChannelID) return interaction.editReply(
                     'No member counter has been set up in this server!');
-                db.query(
+                conn.query(
                     'UPDATE guilds SET member_counter_channel_id = ?, member_counter_style = ? WHERE guild_id = ?',
                     [null, null, interaction.guild.id]);
                 if (counterChannel) counterChannel.delete();
@@ -92,7 +92,7 @@ module.exports = {
                 const name = interaction.options.getString('name');
                 if (!['{fullLength}', '{thousandLength}', '{fullLength.space}', '{fullLength.comma}'].some((e) => name.includes(e))) return interaction.editReply(
                     'The name must include `{fullLength}` or `{thousandLength}`.');
-                db.query('UPDATE guilds SET member_counter_style = ? WHERE guild_id = ?',
+                conn.query('UPDATE guilds SET member_counter_style = ? WHERE guild_id = ?',
                     [name, interaction.guild.id]);
 
                 ChannelType.GuildVoice = 2;
@@ -103,7 +103,7 @@ module.exports = {
                             type: ChannelType.GuildVoice,
                             permissionOverwrites: [{ id: interaction.guild.id, deny: '1048576' }],
                         });
-                    db.query('UPDATE guilds SET member_counter_channel_id = ? WHERE guild_id = ?',
+                    conn.query('UPDATE guilds SET member_counter_channel_id = ? WHERE guild_id = ?',
                         [counterChannel.id, interaction.guild.id]);
                 }
                 await interaction.editReply(

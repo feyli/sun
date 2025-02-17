@@ -10,7 +10,7 @@ module.exports = (description) => {
 
             let i;
             for (i = 0; i < description.length; i++) {
-                if (description[i].text.includes('\n')) {
+                if (description[i].text && description[i].text.includes('\n')) {
                     break;
                 }
             }

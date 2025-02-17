@@ -165,7 +165,7 @@ module.exports = {
     category: 'Moderation',
     run: async (client, interaction) => {
         await interaction.deferReply();
-        const db = client.db;
+        const pool = client.sunPool;
 
         const subcommand = interaction.options.getSubcommand();
 
@@ -189,10 +189,10 @@ module.exports = {
                     creator: interaction.user.id,
                 };
 
-                const IDDoesExist = await db.query('SELECT warn_id FROM warns WHERE warn_id = ?', [warn.warnId]);
+                const IDDoesExist = await pool.query('SELECT warn_id FROM warns WHERE warn_id = ?', [warn.warnId]);
                 if (IDDoesExist[0]) warn.warnId = nanoid(25);
 
-                await db.query('INSERT INTO warns (warn_id, user_id, guild_id, reason_title, reason_description, creator_id) VALUES (?, ?, ?, ?, ?, ?)', [warn.warnId, warn.userId, warn.guildId, warn.title, warn.description, warn.creator]);
+                await pool.query('INSERT INTO warns (warn_id, user_id, guild_id, reason_title, reason_description, creator_id) VALUES (?, ?, ?, ?, ?, ?)', [warn.warnId, warn.userId, warn.guildId, warn.title, warn.description, warn.creator]);
 
                 const interactionEmbed = {
                     title: `Warned ${user.username}!`,
@@ -254,14 +254,15 @@ module.exports = {
                 break;
             }
             case 'remove': {
+                const conn = await pool.getConnection();
                 const givenID = interaction.options.getString('warn_id');
-                const warn = await db.query('SELECT * FROM warns WHERE warn_id = ?', [givenID]).then((res) => {
+                const warn = await conn.query('SELECT * FROM warns WHERE warn_id = ?', [givenID]).then((res) => {
                     return res[0];
                 });
 
                 if (!warn || warn.guild_id !== interaction.guild.id) return interaction.editReply({ content: 'This warn ID does not exist.', ephemeral: true });
 
-                await db.query('DELETE FROM warns WHERE warn_id = ?', [givenID]);
+                await conn.query('DELETE FROM warns WHERE warn_id = ?', [givenID]);
 
                 const embed = {
                     title: "Warn succesfully deleted",
@@ -285,14 +286,15 @@ module.exports = {
                 break;
             }
             case 'clean': {
+                const conn = await pool.getConnection();
                 const user = interaction.options.getUser('user');
                 const member = interaction.guild.members.cache.get(user.id);
                 if (user.bot) return interaction.editReply({ content: 'You cannot warn a bot. Why would you clear its warns?', ephemeral: true });
                 if (member.roles.highest.position >= interaction.member.roles.highest.position && !interaction.member.permissions.has('8')) return interaction.editReply({ content: 'You can\'t warn this user. Your highest role is not prior to this member\'s.', ephemeral: true });
 
-                const length = await db.query('SELECT * FROM warns WHERE user_id = ? AND guild_id = ?', [user.id, interaction.guild.id]).then((res) => res.length);
+                const length = await conn.query('SELECT * FROM warns WHERE user_id = ? AND guild_id = ?', [user.id, interaction.guild.id]).then((res) => res.length);
                 if (length === 0) return interaction.editReply({ content: 'This user has no warns (at least on this server).', ephemeral: true });
-                await db.query('DELETE FROM warns WHERE user_id = ? AND guild_id = ?', [user.id, interaction.guild.id]);
+                await conn.query('DELETE FROM warns WHERE user_id = ? AND guild_id = ?', [user.id, interaction.guild.id]);
 
                 const embed = {
                     title: `Cleared ${length} warns of ${user.username}!`,
@@ -310,7 +312,7 @@ module.exports = {
             case 'list': {
                 const user = interaction.options.getUser('user');
 
-                const warns = await db.query('SELECT warn_id, reason_description, reason_title, UNIX_TIMESTAMP(timestamp) AS timestamp FROM warns WHERE user_id = ? AND guild_id = ?', [user.id, interaction.guild.id, user.id, interaction.guild.id]);
+                const warns = await pool.query('SELECT warn_id, reason_description, reason_title, UNIX_TIMESTAMP(timestamp) AS timestamp FROM warns WHERE user_id = ? AND guild_id = ?', [user.id, interaction.guild.id, user.id, interaction.guild.id]);
                 if (warns.length === 0) return interaction.editReply({ content: 'This user has no warns (at least on this server).', ephemeral: true });
                 warns.sort((a, b) => b.timestamp - a.timestamp);
 
@@ -338,7 +340,7 @@ module.exports = {
             }
             case 'info': {
                 const givenID = interaction.options.getString('warn_id');
-                const warn = await db.query('SELECT warn_id, user_id, guild_id, reason_title, reason_description, creator_id, UNIX_TIMESTAMP(timestamp) AS timestamp FROM warns WHERE warn_id = ?', [givenID]).then((res) => {
+                const warn = await pool.query('SELECT warn_id, user_id, guild_id, reason_title, reason_description, creator_id, UNIX_TIMESTAMP(timestamp) AS timestamp FROM warns WHERE warn_id = ?', [givenID]).then((res) => {
                     return res[0];
                 });
                 if (!warn || warn.guild_id !== interaction.guild.id) return interaction.editReply({ content: 'This warn ID does not exist.', ephemeral: true });
@@ -391,8 +393,9 @@ module.exports = {
                 break;
             }
             case 'edit': {
+                const conn = await pool.getConnection();
                 const givenID = interaction.options.getString('warn_id');
-                const warn = await db.query('SELECT * FROM warns WHERE warn_id = ?', [givenID]).then((res) => {
+                const warn = await conn.query('SELECT * FROM warns WHERE warn_id = ?', [givenID]).then((res) => {
                     return res[0];
                 });
                 if (!warn || warn.guild_id !== interaction.guild.id) return interaction.editReply({ content: 'This warn ID does not exist.', ephemeral: true });
@@ -404,7 +407,7 @@ module.exports = {
                 if (!newTitle && !newDescription && !removeDescription) return interaction.editReply({ content: 'You must edit at least one thing.', ephemeral: true });
                 if (removeDescription && newDescription) return interaction.editReply({ content: 'You cannot **set a new description** and **remove the description** at the same time.\nTo **set a new description** (and __replace__ the old one), set \`remove_description\` to **False**.', ephemeral: true });
 
-                await db.query('UPDATE warns SET reason_title = IF(? IS NOT NULL, ?, reason_title), reason_description = IF(? = true, NULL, IF(? IS NOT NULL, ?, reason_description)) WHERE warn_id = ?', [newTitle, newTitle, removeDescription, newDescription, newDescription, givenID]);
+                await conn.query('UPDATE warns SET reason_title = IF(? IS NOT NULL, ?, reason_title), reason_description = IF(? = true, NULL, IF(? IS NOT NULL, ?, reason_description)) WHERE warn_id = ?', [newTitle, newTitle, removeDescription, newDescription, newDescription, givenID]);
 
                 const embed = {
                     title: `Warn ID: \`${givenID}\``,
@@ -434,7 +437,7 @@ module.exports = {
                 break;
             }
             case 'leaderboard': {
-                const warns = await db.query('SELECT user_id, COUNT(*) as count FROM warns WHERE guild_id = ? GROUP BY user_id ORDER BY count DESC LIMIT ?', [interaction.guild.id, interaction.options.getInteger('limit') || 10]);
+                const warns = await pool.query('SELECT user_id, COUNT(*) as count FROM warns WHERE guild_id = ? GROUP BY user_id ORDER BY count DESC LIMIT ?', [interaction.guild.id, interaction.options.getInteger('limit') || 10]);
                 if (warns.length === 0) return interaction.editReply({ content: 'There are no warns in this server.' });
 
                 const embed = {

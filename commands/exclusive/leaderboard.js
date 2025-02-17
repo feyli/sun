@@ -18,11 +18,11 @@ module.exports = {
     run: async (client, interaction) => {
         await interaction.deferReply({ ephemeral: false });
 
-        const db = client.arcaneDb;
+        const pool = client.arcanePool;
 
         const limit = interaction.options.getBoolean('full') ? 15 : 3;
 
-        const res = await db.query("SELECT player_uuid, player_name, points, level, user_id FROM levels LEFT JOIN players USING (player_uuid) ORDER BY points DESC LIMIT ?", [limit]);
+        const res = await pool.query("SELECT player_uuid, player_name, points, level, user_id FROM levels LEFT JOIN players USING (player_uuid) ORDER BY points DESC LIMIT ?", [limit]);
         if (res.length === 0) return interaction.editReply("There doesn't seem to be any player in the database.");
 
         const embed = {

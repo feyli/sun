@@ -35,7 +35,7 @@ client.on('interactionCreate', async (interaction) => {
         console.log(`${interaction.user.username} (${interaction.user.id})} used ${identifier} in ${interaction.guild?.name || "DMs"} (${interaction.guild?.id || interaction.user.username}). Full command: ${identifier} ${interaction.options._hoistedOptions.map(x => x.name + ':' + x.value).join(' ')}`);
 
         // database logging
-        client.db.query('INSERT INTO command_logs (interaction_token, user_id, user_username, guild_id, guild_name, channel_id, channel_name, command_name, options, dm, locale) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [interaction.token, interaction.user.id, interaction.user.username, interaction.guildId || null, interaction.guild?.name || null, interaction.channelId, interaction.channel?.name || null, identifier, interaction.options.data.length > 0 ? JSON.stringify(interaction.options.data) : null, !interaction.inGuild(), interaction.locale]).catch(console.error);
+        client.sunPool.query('INSERT INTO command_logs (interaction_token, user_id, user_username, guild_id, guild_name, channel_id, channel_name, command_name, options, dm, locale) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [interaction.token, interaction.user.id, interaction.user.username, interaction.guildId || null, interaction.guild?.name || null, interaction.channelId, interaction.channel?.name || null, identifier, interaction.options.data.length > 0 ? JSON.stringify(interaction.options.data) : null, !interaction.inGuild(), interaction.locale]).catch(console.error);
     }
 
     // noinspection JSUnresolvedVariable

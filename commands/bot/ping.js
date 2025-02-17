@@ -19,6 +19,7 @@ module.exports = {
     category: 'Bot',
     run: async (client, interaction) => {
         const locales = {
+            'fr': 'C\'est moi wsh',
             'zh-CN': 'Chong!',
             'zh-TW': 'Chong!',
             'it': 'Reggiano!',

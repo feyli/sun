@@ -4,7 +4,8 @@ const fs = require('fs');
 const config = require('./config/main');
 
 const client = new Client(config.client.constructor);
-client.db = null;
+client.sunPool = null;
+client.arcanePool = null;
 
 client.commands = new Collection();
 client.interactions = new Collection();

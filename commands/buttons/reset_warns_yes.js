@@ -15,9 +15,7 @@ module.exports = {
             }], ephemeral: true
         });
 
-        const db = client.db;
-
-        await db.query('DELETE FROM warns WHERE guild_id = ?', [interaction.guild.id]);
+        await client.sunPool.query('DELETE FROM warns WHERE guild_id = ?', [interaction.guild.id]);
 
         await interaction.message.edit({
             embeds: [{

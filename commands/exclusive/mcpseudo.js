@@ -36,7 +36,7 @@ module.exports = {
     run: async (client, interaction) => {
         await interaction.deferReply({ ephemeral: false });
 
-        const db = client.arcaneDb;
+        const conn = client.arcanePool.getConnection();
 
         const subcommand = interaction.options.getSubcommand();
 
@@ -49,20 +49,20 @@ module.exports = {
 
                 if (res.errorMessage && res.errorMessage.includes("Couldn't find")) return interaction.editReply(`Le pseudo \`${nickname}\` n'existe pas sur Minecraft. Veuillez indiquer un pseudo valide.`);
 
-                const [result] = await db.query('SELECT user_id FROM players WHERE player_uuid = ?', [res.id]);
+                const [result] = await conn.query('SELECT user_id FROM players WHERE player_uuid = ?', [res.id]);
                 if (result) {
                     if (result.user_id === interaction.user.id) return interaction.editReply(`Ce profil Minecraft est déjà lié à votre profil Discord.`);
                     else return interaction.editReply(`<@${result.user_id}> a déjà lié ce profil Minecraft à son profil Discord.`);
                 }
 
-                await db.query('INSERT INTO players (user_id, player_uuid) VALUES (?, ?) ON DUPLICATE KEY UPDATE player_uuid = ?', [interaction.user.id, res.id, res.id]);
+                await conn.query('INSERT INTO players (user_id, player_uuid) VALUES (?, ?) ON DUPLICATE KEY UPDATE player_uuid = ?', [interaction.user.id, res.id, res.id]);
 
                 await interaction.editReply(`Ton pseudo Minecraft a bien été défini sur : \`${nickname}\` !`);
 
                 break;
             }
             case 'remove': {
-                await db.query('DELETE FROM players WHERE user_id = ?', [interaction.user.id]);
+                await conn.query('DELETE FROM players WHERE user_id = ?', [interaction.user.id]);
 
                 await interaction.editReply({ content: `Ton pseudo Minecraft a bien été supprimé du système !` });
 

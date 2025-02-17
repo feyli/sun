@@ -29,20 +29,17 @@ module.exports = {
     category: 'War Thunder Campaign',
     guild_id: '1097431302338256977',
     run: async (client, interaction) => {
+        const pool = client.sunPool;
         if (interaction.options.getSubcommand() === 'reset') {
-            const db = client.db;
-
-            await db.query('UPDATE guilds SET brief_channel = ? WHERE guild_id = ?',
+            await pool.query('UPDATE guilds SET brief_channel = ? WHERE guild_id = ?',
                 [null, interaction.guild.id]);
 
             interaction.reply(
                 { content: 'Reset the mission brief channel.', ephemeral: false });
         } else if (interaction.options.getSubcommand() === 'set') {
-            const db = client.db;
-
             const channel = interaction.options.getChannel('channel');
 
-            await db.query('UPDATE guilds SET brief_channel = ? WHERE guild_id = ?',
+            await pool.query('UPDATE guilds SET brief_channel = ? WHERE guild_id = ?',
                 [channel.id, interaction.guild.id]);
 
             interaction.reply(

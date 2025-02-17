@@ -53,10 +53,10 @@ module.exports = {
         await interaction.deferReply();
 
         const subcommand = interaction.options.getSubcommand();
-        const db = client.db;
+        const conn = await client.sunPool.getConnection();
 
         // noinspection JSUnresolvedVariable
-        const welcomeChannelID = await db.query(
+        const welcomeChannelID = await conn.query(
             'SELECT welcome_channel_id FROM guilds WHERE guild_id = ?', [interaction.guild.id]).then((res) => res[0].welcome_channel_id);
 
         if (subcommand === 'enable') {
@@ -66,14 +66,14 @@ module.exports = {
             if (!channel.permissionsFor(interaction.guild.members.me).has('VIEW_CHANNEL')) return interaction.reply(
                 'I do not have permission to view that channel.');
 
-            await db.query('UPDATE guilds SET welcome_channel_id = ? WHERE guild_id = ?',
+            await conn.query('UPDATE guilds SET welcome_channel_id = ? WHERE guild_id = ?',
                 [channel.id, interaction.guild.id]);
             await interaction.editReply(`Successfully enabled the welcome system in ${channel}.`);
         } else if (subcommand === 'disable') {
             if (!welcomeChannelID) return interaction.editReply(
                 'The welcome system is already disabled.');
 
-            await db.query(
+            await conn.query(
                 'UPDATE guilds SET welcome_channel_id = NULL, welcome_message = NULL WHERE guild_id = ?',
                 [interaction.guild.id]);
             await interaction.editReply('Successfully disabled the welcome system.');
@@ -82,7 +82,7 @@ module.exports = {
                 'The welcome system is disabled. Enable it with `/welcome enable`.');
 
             const message = interaction.options.getString('message');
-            await db.query('UPDATE guilds SET welcome_message = ? WHERE guild_id = ?',
+            await conn.query('UPDATE guilds SET welcome_message = ? WHERE guild_id = ?',
                 [message, interaction.guild.id]);
             await interaction.editReply('Successfully set the welcome message.');
         } else if (subcommand === 'help') {

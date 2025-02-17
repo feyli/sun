@@ -5,17 +5,17 @@ const { MinecraftServerListPing: mslp } = require("minecraft-status");
 
 module.exports = async (guildID = null) => {
     console.log("Starting to update Minecraft server counters.");
-    const db = client.db;
+    const pool = client.sunPool;
 
     if (guildID) {
         // only update the guild with the given ID
-        const guild = await db.query('SELECT address, port, counter_channel_id, counter_style FROM mcstatus WHERE counter_channel_id IS NOT NULL AND address IS NOT NULL AND guild_id = ?', [guildID]).then((res) => res[0]);
+        const guild = await pool.query('SELECT address, port, counter_channel_id, counter_style FROM mcstatus WHERE counter_channel_id IS NOT NULL AND address IS NOT NULL AND guild_id = ?', [guildID]).then((res) => res[0]);
         if (!guild) return;
         const channel = await client.channels.fetch(guild.counter_channel_id).catch(() => console.log(`Failed to fetch channel ${guild.counter_channel_id}`));
         const style = guild.counter_style;
 
         if (!channel) {
-            db.query(
+            pool.query(
                 'UPDATE mcstatus SET counter_channel_id = NULL, counter_style = NULL WHERE counter_channel_id = ?',
                 [guild.counter_channel_id]);
             return;
@@ -46,13 +46,13 @@ module.exports = async (guildID = null) => {
         console.log(`Updated ${address}:${port} to ${channelName}`);
     }
 
-    const counterGuilds = await db.query('SELECT address, port, counter_channel_id, counter_style FROM mcstatus WHERE counter_channel_id IS NOT NULL AND address IS NOT NULL');
+    const counterGuilds = await pool.query('SELECT address, port, counter_channel_id, counter_style FROM mcstatus WHERE counter_channel_id IS NOT NULL AND address IS NOT NULL');
     for (const guild of counterGuilds) {
         const channel = await client.channels.fetch(guild.counter_channel_id).catch(() => console.log(`Failed to fetch channel ${guild.counter_channel_id}`));
         const style = guild.counter_style;
 
         if (!channel) {
-            db.query(
+            pool.query(
                 'UPDATE mcstatus SET counter_channel_id = NULL, counter_style = NULL WHERE counter_channel_id = ?',
                 [guild.counter_channel_id]);
             return;

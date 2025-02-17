@@ -82,7 +82,7 @@ module.exports = {
     cooldown: 5000,
     category: 'System Management',
     run: async (client, interaction) => {
-        const db = client.db;
+        const conn = client.sunPool.getConnection();
         const subcommand = interaction.options.getSubcommand();
         const subcommandGroup = interaction.options.getSubcommandGroup();
 
@@ -91,7 +91,7 @@ module.exports = {
         if (subcommandGroup === 'counter') {
             if (subcommand === 'enable' || subcommand === 'disable' || subcommand === 'rename') {
                 // noinspection JSUnresolvedVariable
-                const guild = await db.query(
+                const guild = await conn.query(
                     'SELECT * FROM mcstatus WHERE guild_id = ? AND address IS NOT NULL',
                     [interaction.guild.id]).then((res) => res[0]);
                 if (!guild) return interaction.editReply('No Minecraft server has been set up in this server! Use `/mcsettings set` to set one up.');
@@ -117,7 +117,7 @@ module.exports = {
                                 type: ChannelType.GuildVoice,
                                 permissionOverwrites: [{ id: interaction.guild.id, deny: '1048576' }],
                             });
-                        db.query(
+                        conn.query(
                             'UPDATE mcstatus SET counter_channel_id = ? WHERE guild_id = ?',
                             [channel.id, interaction.guild.id]);
                         await interaction.editReply(`${channel} has been created and will now update every 15 minutes.`);
@@ -127,7 +127,7 @@ module.exports = {
                     case 'disable': {
                         if (!dbChannelID) return interaction.editReply(
                             'No Minecraft server counter has been set up in this server!');
-                        db.query(
+                        conn.query(
                             'UPDATE mcstatus SET counter_channel_id = ?, counter_style = ? WHERE guild_id = ?',
                             [null, null, interaction.guild.id]);
                         if (counterChannel) counterChannel.delete();
@@ -141,7 +141,7 @@ module.exports = {
                         const name = interaction.options.getString('name');
                         if (!/\{online|\{max/.test(name)) return interaction.editReply(
                             'The name must include `{online}` or `{max}`.');
-                        db.query('UPDATE mcstatus SET counter_style = ? WHERE guild_id = ?',
+                        conn.query('UPDATE mcstatus SET counter_style = ? WHERE guild_id = ?',
                             [name, interaction.guild.id]);
 
                         ChannelType.GuildVoice = 2;
@@ -152,7 +152,7 @@ module.exports = {
                                     type: ChannelType.GuildVoice,
                                     permissionOverwrites: [{ id: interaction.guild.id, deny: '1048576' }],
                                 });
-                            db.query('UPDATE mcstatus SET counter_channel_id = ? WHERE guild_id = ?',
+                            conn.query('UPDATE mcstatus SET counter_channel_id = ? WHERE guild_id = ?',
                                 [counterChannel.id, interaction.guild.id]);
                         }
                         await interaction.editReply(`The counter name has been set to \`${name}\` and the channel will soon be updated. Note that this may take up to __15 minutes__. If you want to bypass this time, disable and enable the feature again.`);
@@ -196,7 +196,7 @@ module.exports = {
                     const address = interaction.options.getString('address');
                     const port = interaction.options.getInteger('port') ?? 25565;
 
-                    await db.query('INSERT INTO mcstatus (guild_id, address, port) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE address = ?, port = ?', [interaction.guild.id, address, port, address, port]);
+                    await conn.query('INSERT INTO mcstatus (guild_id, address, port) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE address = ?, port = ?', [interaction.guild.id, address, port, address, port]);
 
                     const embed = {
                         title: 'Minecraft server set!',
@@ -224,7 +224,7 @@ module.exports = {
                     break;
                 }
                 case 'reset': {
-                    await db.query('DELETE FROM mcstatus WHERE guild_id = ?', [interaction.guild.id]);
+                    await conn.query('DELETE FROM mcstatus WHERE guild_id = ?', [interaction.guild.id]);
 
                     const embed = {
                         title: 'Minecraft server status system reset!',
