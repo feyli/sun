@@ -36,7 +36,7 @@ module.exports = {
     run: async (client, interaction) => {
         await interaction.deferReply({ ephemeral: false });
 
-        const conn = client.arcanePool.getConnection();
+        const conn = await client.arcanePool.getConnection();
 
         const subcommand = interaction.options.getSubcommand();
 

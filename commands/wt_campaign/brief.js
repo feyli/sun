@@ -19,7 +19,7 @@ module.exports = {
     guild_id: '1097431302338256977',
     category: 'War Thunder Campaign',
     run: async (client, interaction) => {
-        const conn = client.sunPool.getConnection();
+        const conn = await client.sunPool.getConnection();
 
         if (interaction.options.getSubcommand() === 'send') {
             if (!interaction.memberPermissions.has(8)) return interaction.reply(

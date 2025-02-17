@@ -45,7 +45,7 @@ module.exports = {
     async run(client, interaction) {
         await interaction.deferReply({ ephemeral: false });
 
-        const conn = client.sunPool.getConnection();
+        const conn = await client.sunPool.getConnection();
         const command = interaction.options.getSubcommand();
 
         if (command === 'enable' || command === 'disable' || command === 'rename' || command ===

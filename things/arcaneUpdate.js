@@ -17,7 +17,7 @@ module.exports = async () => {
     const players = await pool.query('SELECT user_id, REPLACE(player_uuid, \'-\', \'\') AS player_uuid FROM players WHERE user_id IS NOT NULL');
 
     try {
-        const res = await mslp.ping(4, '82.64.252.221', 45000);
+        const res = await mslp.ping(4, '82.64.252.221', 32000);
 
         const sample = res.players.sample;
 

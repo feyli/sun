@@ -3,7 +3,7 @@ const client = require('../index');
 client.on('guildMemberAdd', async (member) => {
   if (member.user.bot) return;
 
-  const conn = client.sunPool.getConnection();
+  const conn = await client.sunPool.getConnection();
 
   // noinspection JSUnresolvedVariable
   const welcomeChannelID = await conn.query(

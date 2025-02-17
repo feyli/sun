@@ -82,7 +82,7 @@ module.exports = {
     cooldown: 5000,
     category: 'System Management',
     run: async (client, interaction) => {
-        const conn = client.sunPool.getConnection();
+        const conn = await client.sunPool.getConnection();
         const subcommand = interaction.options.getSubcommand();
         const subcommandGroup = interaction.options.getSubcommandGroup();
 

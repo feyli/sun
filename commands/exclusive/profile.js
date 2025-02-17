@@ -20,7 +20,7 @@ module.exports = {
     cooldown: 2000,
     guild_id: '1108029635096223814',
     run: async (client, interaction) => {
-        const conn = client.arcanePool.getConnection();
+        const conn = await client.arcanePool.getConnection();
 
         await interaction.deferReply({ ephemeral: false });
 

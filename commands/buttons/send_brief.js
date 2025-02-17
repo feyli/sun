@@ -5,7 +5,7 @@ module.exports = {
     type: 'button',
     run: async (client, interaction) => {
         // noinspection DuplicatedCode
-        const conn = client.sunPool.getConnection();
+        const conn = await client.sunPool.getConnection();
 
         if (!interaction.memberPermissions.has(8)) return interaction.reply(
             { content: 'You do not have permission to use this command.', ephemeral: true });

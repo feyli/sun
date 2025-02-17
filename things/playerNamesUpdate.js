@@ -2,8 +2,8 @@
 
 const client = require('../index');
 
-module.exports = async() => {
-    const conn = client.arcanePool.getConnection();
+module.exports = async () => {
+    const conn = await client.arcanePool.getConnection();
     const players = await conn.query('SELECT player_uuid FROM players');
     const playerArray = [];
     for (const player of players) {
