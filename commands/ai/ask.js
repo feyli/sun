@@ -15,7 +15,7 @@ module.exports = {
                 required: true,
             },
             {
-                name: 'gpt-4.1',
+                name: 'gpt4_1',
                 description: 'Use GPT-4.1?',
                 type: 5,
                 required: false,
@@ -33,7 +33,7 @@ module.exports = {
     owner_only: true,
     run: async (client, interaction) => {
         const attachment = interaction.options.getAttachment('attachment');
-        const model = interaction.options.getBoolean('gpt-4.1') ? 'gpt-4.1' : 'gpt-4.1-nano';
+        const model = interaction.options.getBoolean('gpt4_1') ? 'gpt-4.1' : 'gpt-4.1-nano';
         const question = interaction.options.getString('question');
 
         await interaction.deferReply({ ephemeral: false });
