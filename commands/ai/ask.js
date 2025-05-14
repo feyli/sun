@@ -3,7 +3,7 @@ const { OpenAI } = require("openai");
 module.exports = {
     command_data: {
         name: 'ask',
-        description: 'Ask any question to answer through GPT-3.5 Turbo or GPT-4o',
+        description: 'Ask any question to answer using GPT-4.1 nano or GPT-4.1',
         type: 1,
         integration_types: [0, 1],
         contexts: [0, 1, 2],
@@ -15,8 +15,8 @@ module.exports = {
                 required: true,
             },
             {
-                name: 'regular-gpt-4o',
-                description: 'Use regular GPT-4o?',
+                name: 'gpt-4.1',
+                description: 'Use GPT-4.1?',
                 type: 5,
                 required: false,
             },
@@ -33,7 +33,7 @@ module.exports = {
     owner_only: true,
     run: async (client, interaction) => {
         const attachment = interaction.options.getAttachment('attachment');
-        const model = interaction.options.getBoolean('regular-gpt-4o') ? 'gpt-4o' : 'gpt-4o-mini';
+        const model = interaction.options.getBoolean('gpt-4.1') ? 'gpt-4.1' : 'gpt-4.1-nano';
         const question = interaction.options.getString('question');
 
         await interaction.deferReply({ ephemeral: false });
