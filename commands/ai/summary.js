@@ -20,10 +20,13 @@ module.exports = {
             input: text
         })).output_text;
 
-        const jsonRes = JSON.parse(response).catch(e => {
+        let jsonRes;
+        try {
+            jsonRes = JSON.parse(response);
+        } catch (e) {
             console.error(e);
             return interaction.editReply({ content: 'Failed to parse the response from the AI.', ephemeral: true });
-        });
+        }
 
         await interaction.editReply({
             embeds: [
