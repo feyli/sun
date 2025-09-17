@@ -13,24 +13,23 @@ module.exports = {
         if ((text.length < 100) && interaction.user.id.toString() !== config.users.owner) return interaction.reply({ content: 'The text must be at least 100 characters long.', ephemeral: true }) && client.cooldowns.get(interaction.commandName).delete(interaction.user.id);
         const openai = new OpenAI({ apiKey: process.env.OPENAIKEY });
         await interaction.deferReply({ ephemeral: false });
-        const response = await new Promise((resolve) => openai.beta.threads.createAndRunStream({
-                assistant_id: "asst_s0HA2zuPSPn0W2fRYspZ3sOt",
-                thread: {
-                    messages: [
-                        {
-                            role: "user",
-                            content: text
-                        }
-                    ],
-                }
-            }).on('textDone', (text) => resolve(text.value))
-        );
+        const response = (await openai.responses.create({
+            prompt: {
+                "id": "pmpt_68c7fdde04d08197b86cc52fc391d26709cbb4becaaa78f1"
+            },
+            input: text
+        })).output_text;
+
+        const jsonRes = JSON.parse(response).catch(e => {
+            console.error(e);
+            return interaction.editReply({ content: 'Failed to parse the response from the AI.', ephemeral: true });
+        });
 
         await interaction.editReply({
             embeds: [
                 {
                     title: ":sparkles: Summary",
-                    description: response,
+                    description: `### Short Summary:\n${jsonRes["short_summary"]}\n\n### Key Points:\n${jsonRes["key_information"].map((point, index) => `${index + 1}. ${point}`).join('\n')}`,
                     color: 0xFFAC32,
                 },
             ]

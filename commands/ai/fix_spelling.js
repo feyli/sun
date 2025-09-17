@@ -14,18 +14,13 @@ module.exports = {
         if ((text.length < 4 || text.length > 1000) && interaction.user.id.toString() !== config.users.owner) return interaction.reply({ content: 'The text must be between 4 and 1000 characters.', ephemeral: true }) && client.cooldowns.get(interaction.commandName).delete(interaction.user.id);
         const openai = new OpenAI({ apiKey: process.env.OPENAIKEY });
         await interaction.deferReply({ ephemeral: false });
-        const response = await new Promise((resolve) => openai.beta.threads.createAndRunStream({
-                assistant_id: "asst_do6mWq7NchUAQmtGgUN1ZuoR",
-                thread: {
-                    messages: [
-                        {
-                            role: "user",
-                            content: text
-                        }
-                    ],
-                }
-            }).on('textDone', (text) => resolve(text.value))
-        );
+
+        const response = (await openai.responses.create({
+            prompt: {
+                "id": "pmpt_68c7fe146b808193aeec5143b21b07070fd4695495b8360e"
+            },
+            input: text
+        })).output_text;
 
         const { crossedText, highlightedText } = difference(text, response);
         await interaction.editReply({
