@@ -1,5 +1,5 @@
 # Sun
-An **open-source** Discord bot made by [Feyli](https://feyli.me)
+An **open-source** Discord bot made by [Feyli](https://feyli.dev)
 
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/feyli/sun)
 ## Features
@@ -26,7 +26,7 @@ You may use **some** of this code. However, you **may not** use the code as a wh
 
 #### Who are you, and how can we get in touch?
 
-I'm **Feyli**! Get to know me [here](https://feyli.me). You can find all my socials there, so feel free to contact me on any of them—though I prefer Discord, it's really up to you. Can't wait to hear from you! 😊
+I'm **Feyli**! Get to know me [here](https://feyli.dev). You can find all my socials there, so feel free to contact me on any of them—though I prefer Discord, it's really up to you. Can't wait to hear from you! 😊
 ## Environment Variables
 
 To run this project, you'll need to add the following environment variables to your `.env` file:
@@ -58,4 +58,5 @@ We have a **support** and **community** Discord server! Join it [here](https://d
 
 ![Logo](https://cdn.discordapp.com/avatars/743826135061889028/1c7fda307d3c78723c85dffed3bbae1b.webp?size=4096&format=webp&width=0&height=512)
 
-This logo was entirely created by [Feyli](https://feyli.me) and is inspired by his own logo. It features a **simplified fox**, split into two complementary parts.
+This logo was entirely created by [Feyli](https://feyli.dev) and is inspired by his own logo. It features a **simplified fox**, split into two complementary parts.
+This logo may not be used by anyone, anywhere, without the explicit approval of the author.
