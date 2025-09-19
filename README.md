@@ -59,3 +59,4 @@ We have a **support** and **community** Discord server! Join it [here](https://d
 ![Logo](https://cdn.discordapp.com/avatars/743826135061889028/1c7fda307d3c78723c85dffed3bbae1b.webp?size=4096&format=webp&width=0&height=512)
 
 This logo was entirely created by [Feyli](https://feyli.me) and is inspired by his own logo. It features a **simplified fox**, split into two complementary parts.
+This logo may not be used by anyone, anywhere, without the explicit approval of the author.
