@@ -10,7 +10,7 @@
     "node": ">=16.9.0"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "bun index.js"
   },
   "dependencies": {
     "@discordjs/voice": "^0.16.1",
