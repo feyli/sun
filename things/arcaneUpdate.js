@@ -55,8 +55,9 @@ module.exports = async () => {
             }
         }
     } catch (e) {
-        console.log("Catch Triggered");
-        console.error(e);
+        console.log(`[Arcane Update] Failed to connect to Minecraft server at 82.64.252.221:32000`);
+        console.log(`[Arcane Update] Error: ${e.code || 'UNKNOWN'} - ${e.message || e}`);
+        console.log(`[Arcane Update] Cleaning up: Removing in-game roles and voice channels`);
         await guild.members.cache.filter((m) => m.roles.cache.has('1108870536391565422')).forEach((m) => m.roles.remove(inGameRole));
         if (category.children) category.children.cache.filter((c) => c.type === 'voice').forEach((c) => c.delete());
     }
