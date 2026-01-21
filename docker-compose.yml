@@ -8,6 +8,11 @@ services:
     restart: always
     environment:
       - NODE_ENV=production
+      - TOKEN=${TOKEN}
+      - DBPASSWORD=${DBPASSWORD}
+      - ARCANEDBPASSWORD=${ARCANEDBPASSWORD}
+      - OPENAIKEY=${OPENAIKEY}
+      - ENVIRONMENT=${ENVIRONMENT}
     logging:
       driver: "json-file"
       options:
