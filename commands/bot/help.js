@@ -39,7 +39,7 @@ module.exports = {
         });
         const choices = commands.map((command) => command.name);
         // Case-insensitive, startsWith match, limit to 25 results
-        const filtered = choices.filter((choice) => choice.toLowerCase().startsWith(focusedValue.toLowerCase())).slice(0, 25);
+        const filtered = choices.filter((choice) => choice.toLowerCase().includes(focusedValue.toLowerCase())).slice(0, 25);
         await interaction.respond(filtered.map((choice) => {
             return { name: choice, value: choice };
         }));
