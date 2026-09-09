@@ -1,0 +1,1 @@
+ALTER TABLE "guilds" ADD COLUMN "confession_channel_id" varchar(30);
