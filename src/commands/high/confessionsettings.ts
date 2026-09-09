@@ -15,7 +15,7 @@ export default defineSlashCommand({
             .addSubcommand((sub) =>
                 sub
                     .setName('channel')
-                    .setDescription('Set the channel confessions are posted in.')
+                    .setDescription('Set the channel confessions are posted in. If confessions are disabled, this will enable them.')
                     .addChannelOption((option) =>
                         option.setName('channel').setDescription('The channel to post confessions in.').setRequired(true).addChannelTypes(...CONFESSION_CHANNEL_TYPES),
                     ),
