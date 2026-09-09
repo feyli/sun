@@ -127,7 +127,7 @@ dist
 
 # idea
 .idea
-/config/main.js
+/src/config.ts
 /ecosystem.config.js
 
 .DS_Store
