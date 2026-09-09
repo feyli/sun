@@ -10,7 +10,7 @@ export default defineSlashCommand({
     data: guildsOnly(
         new SlashCommandBuilder()
             .setName('confessionsettings')
-            .setDescription('Enable confessions for this server.')
+            .setDescription('Enable confessions for this server and select a dedicated channel.')
             .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels)
             .addSubcommand((sub) =>
                 sub
@@ -20,7 +20,7 @@ export default defineSlashCommand({
                         option.setName('channel').setDescription('The channel to post confessions in.').setRequired(true).addChannelTypes(...CONFESSION_CHANNEL_TYPES),
                     ),
             )
-            .addSubcommand((sub) => sub.setName('reset').setDescription('Post confessions in the channel they were sent from again.'))
+            .addSubcommand((sub) => sub.setName('disable').setDescription('Disable the confession system entirely.'))
             .addSubcommand((sub) => sub.setName('status').setDescription('Show the current confession settings.')),
     ),
     category: 'System Management',
@@ -42,7 +42,9 @@ export default defineSlashCommand({
             return interaction.editReply(`Confessions are now enabled and will now be posted in ${channel}.`);
         }
 
-        if (subcommand === 'reset') {
+        if (subcommand === 'disable') {
+            const [row] = await db.select({confessionChannelId: guilds.confessionChannelId}).from(guilds).where(eq(guilds.guildId, interaction.guild.id));
+            if (!row?.confessionChannelId) return interaction.editReply('Confessions are already disabled.');
             await db.update(guilds).set({confessionChannelId: null}).where(eq(guilds.guildId, interaction.guild.id));
             return interaction.editReply('Confessions are now disabled.');
         }
