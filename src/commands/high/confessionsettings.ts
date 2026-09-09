@@ -10,7 +10,7 @@ export default defineSlashCommand({
     data: guildsOnly(
         new SlashCommandBuilder()
             .setName('confessionsettings')
-            .setDescription('Configure confession settings for this server.')
+            .setDescription('Enable confessions for this server.')
             .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels)
             .addSubcommand((sub) =>
                 sub
@@ -39,12 +39,12 @@ export default defineSlashCommand({
             if (!permissions?.has(PermissionFlagsBits.SendMessages)) return interaction.editReply('I do not have permission to send messages in that channel.');
 
             await db.update(guilds).set({confessionChannelId: channel.id}).where(eq(guilds.guildId, interaction.guild.id));
-            return interaction.editReply(`Confessions will now be posted in ${channel}.`);
+            return interaction.editReply(`Confessions are now enabled and will now be posted in ${channel}.`);
         }
 
         if (subcommand === 'reset') {
             await db.update(guilds).set({confessionChannelId: null}).where(eq(guilds.guildId, interaction.guild.id));
-            return interaction.editReply('Confessions will now be posted in the channel they were sent from.');
+            return interaction.editReply('Confessions are now disabled.');
         }
 
         const [row] = await db.select({confessionChannelId: guilds.confessionChannelId}).from(guilds).where(eq(guilds.guildId, interaction.guild.id));
@@ -55,10 +55,20 @@ export default defineSlashCommand({
             title: 'Confession Settings',
             author: {name: interaction.guild.name, icon_url: interaction.guild.iconURL() ?? undefined},
             fields: [
-                {name: 'Dedicated channel', value: channel?.toString() ?? 'None (posted where sent)', inline: true},
-                {name: 'Channel ID', value: channelId ?? 'None', inline: true},
+                {
+                    name: 'Status',
+                    value: channel && channelId ? 'Enabled' : 'Disabled',
+                    inline: true
+                },
             ],
         };
+
+        if (channel && channelId && embed.fields) embed.fields.push({
+            name: 'Channel',
+            value: `${channel} (${channelId})`,
+            inline: true
+        });
+
         await interaction.editReply({embeds: [embed]});
     },
 });
