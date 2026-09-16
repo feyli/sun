@@ -43,6 +43,11 @@ export async function updateMemberCounters(client: Client): Promise<void> {
         }
 
         const humanCount = channel.guild.members.cache.filter((member) => !member.user.bot).size;
-        channel.setName(formatMemberCounterName(row.style, humanCount)).catch(console.error);
+        const channelName = formatMemberCounterName(row.style, humanCount);
+
+        // Discord only allows two channel renames per ten minutes, so never spend one on an unchanged name.
+        if (channel.name === channelName) continue;
+
+        channel.setName(channelName).catch(console.error);
     }
 }

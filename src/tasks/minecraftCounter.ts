@@ -53,21 +53,19 @@ async function updateCounter(client: Client, row: MinecraftCounterRow): Promise<
     const port = row.port ?? MINECRAFT_DEFAULT_PORT;
     const response = await pingServer(address, port);
 
-    if (!isServerOnline(response)) {
-        channel.setName('Server Offline', 'counter update').catch(console.error);
-        console.log(`Checked ${address}:${port} (offline)`);
-        return;
-    }
+    const channelName = isServerOnline(response)
+        ? formatMinecraftCounterName(row.counterStyle, response.players.online, response.players.max)
+        : 'Server Offline';
 
-    const channelName = formatMinecraftCounterName(row.counterStyle, response.players.online, response.players.max);
+    // Discord only allows two channel renames per ten minutes, so never spend one on an unchanged name.
+    if (channel.name === channelName) return;
+
     channel.setName(channelName, 'counter update').catch(console.error);
     console.log(`Updated ${address}:${port} to ${channelName}`);
 }
 
 /** Renames the Minecraft counter channels; restricted to one guild when `guildId` is given. */
 export async function updateMinecraftCounters(client: Client, guildId?: Snowflake): Promise<void> {
-    console.log('Starting to update Minecraft server counters.');
-
     const configured = and(isNotNull(mcstatus.counterChannelId), isNotNull(mcstatus.address));
     const rows = await client.db
         .select({
@@ -80,6 +78,4 @@ export async function updateMinecraftCounters(client: Client, guildId?: Snowflak
         .where(guildId ? and(configured, eq(mcstatus.guildId, guildId)) : configured);
 
     for (const row of rows) await updateCounter(client, row);
-
-    console.log('Finished updating Minecraft server counters.');
 }
