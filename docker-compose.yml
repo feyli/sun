@@ -9,7 +9,6 @@ services:
     environment:
       - NODE_ENV=production
       - TOKEN=${TOKEN}
-      - DBPASSWORD=${DBPASSWORD}
       - POSTGRES_HOST=${POSTGRES_HOST}
       - POSTGRES_PORT=${POSTGRES_PORT}
       - POSTGRES_DATABASE=${POSTGRES_DATABASE}
