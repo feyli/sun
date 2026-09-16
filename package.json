@@ -8,7 +8,7 @@
   "author": "Feyli",
   "license": "Apache-2.0",
   "engines": {
-    "bun": ">=1.1.0"
+    "bun": ">=1.4.2"
   },
   "scripts": {
     "start": "bun src/index.ts",
@@ -20,20 +20,19 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
-    "diff": "^5.2.0",
+    "diff": "^9.0.0",
     "discord.js": "^14.27.0",
-    "drizzle-orm": "^1.0.0-rc.4",
-    "mariadb": "^3.4.0",
+    "drizzle-orm": "^1.0.0-rc.5-ab785fc",
+    "mariadb": "^3.5.4",
     "minecraft-status": "^1.1.0",
-    "nanoid": "5.0.9",
-    "openai": "^5.20.2"
+    "nanoid": "^6.0.1",
+    "openai": "^7.15.0"
   },
   "devDependencies": {
     "@types/bun": "^1.4.2",
-    "@types/diff": "^5",
     "@types/pg": "^8.23.1",
-    "drizzle-kit": "^1.0.0-rc.4",
+    "drizzle-kit": "^1.0.0-rc.5-ab785fc",
     "pg": "^8.23.0",
-    "typescript": "^5"
+    "typescript": "^7.0.2"
   }
 }
