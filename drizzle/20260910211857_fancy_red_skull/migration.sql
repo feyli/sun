@@ -1,0 +1,1 @@
+ALTER TABLE "awaiting_confessions" RENAME COLUMN "release_date" TO "publishing_date";

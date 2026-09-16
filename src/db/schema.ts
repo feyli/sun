@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm';
-import { boolean, check, foreignKey, index, integer, jsonb, pgEnum, pgTable, text, timestamp, varchar } from 'drizzle-orm/pg-core';
+import { boolean, check, foreignKey, index, integer, jsonb, pgEnum, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
 
 /** Discord snowflakes are at most 20 digits; 30 leaves headroom and matches the original schema. */
 const SNOWFLAKE_LENGTH = 30;
@@ -113,6 +113,16 @@ export const commandLogs = pgTable(
     ],
 );
 
+export const awaitingConfessions = pgTable(
+    'awaiting_confessions',
+    {
+        id: uuid('id').primaryKey().default(sql`uuidv7()`),
+        guildId: varchar('guild_id', {length: SNOWFLAKE_LENGTH}).notNull(),
+        confession: text('confession').notNull(),
+        publishingDate: timestamp('publishing_date', {withTimezone: true}).notNull(),
+    }
+);
+
 export type Guild = typeof guilds.$inferSelect;
 export type McStatus = typeof mcstatus.$inferSelect;
 export type Warn = typeof warns.$inferSelect;
@@ -120,3 +130,5 @@ export type NewWarn = typeof warns.$inferInsert;
 export type Command = typeof commands.$inferSelect;
 export type CommandLog = typeof commandLogs.$inferSelect;
 export type NewCommandLog = typeof commandLogs.$inferInsert;
+export type AwaitingConfession = typeof awaitingConfessions.$inferSelect;
+export type NewAwaitingConfession = typeof awaitingConfessions.$inferInsert;

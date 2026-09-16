@@ -9,6 +9,7 @@ export default defineSlashCommand({
     category: 'Utility',
     cooldown: 30000,
     guildOnly: true,
+    ownerOnly: true,
     async execute(interaction) {
         const [row] = await interaction.client.db
             .select({confessionChannelId: guilds.confessionChannelId})
@@ -29,7 +30,33 @@ export default defineSlashCommand({
                     label
                         .setLabel('Post anonymously')
                         .setDescription('Uncheck this to show your name on the confession.')
-                        .setCheckboxComponent((checkbox) => checkbox.setCustomId('confession_anonymous').setDefault(true)),
+                        .setCheckboxGroupComponent((checkbox) =>
+                            checkbox.setCustomId('confession_anonymous')
+                                .setMinValues(1)
+                                .setMaxValues(1)
+                                .setRequired(true)
+                                .setOptions([
+                                    {
+                                        label: 'Yes, with a random delay (WIP)',
+                                        value: 'yes+delayed',
+                                        description: 'Check this to ensure maximum anonymity with a random timer (between 15 and 30 minutes).',
+                                    },
+                                    {
+                                        label: 'Yes',
+                                        value: 'yes',
+                                        description: 'Your confession will immediately be posted, anonymously.'
+                                    },
+                                    {
+                                        label: 'No',
+                                        value: 'no',
+                                        description: 'Your confession will immediately be posted and your username will be referenced on the post.'
+                                    }
+                                ])),
+                (label) =>
+                    label
+                        .setLabel('Spoiler?')
+                        .setDescription('Check this to mark your confession as a spoiler and have it hidden by default.')
+                        .setCheckboxComponent((checkbox) => checkbox.setCustomId('confession_spoiler').setDefault(false))
             );
 
         await interaction.showModal(modal);
