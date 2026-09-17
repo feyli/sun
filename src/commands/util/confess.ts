@@ -10,7 +10,7 @@ export default defineSlashCommand({
     category: 'Utility',
     cooldown: 30000,
     guildOnly: true,
-    ownerOnly: true,
+    ownerOnly: false,
     async execute(interaction) {
         const [row] = await interaction.client.db
             .select({confessionChannelId: guilds.confessionChannelId})
