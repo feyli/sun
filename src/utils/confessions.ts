@@ -1,7 +1,11 @@
 import argon2 from 'argon2';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, Message, TextChannel, type User } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, Message, spoiler, TextChannel, type User } from "discord.js";
 import type { Database } from '../db';
 import { deletableConfessions } from '../db/schema';
+
+/** Keeps the embed description within Discord's 4096 characters once a warning and `||` are added. */
+export const CONFESSION_MAX_LENGTH = 3900;
+export const TRIGGER_WARNING_MAX_LENGTH = 100;
 
 /**
  * Turns a confessing user into a token that proves nothing but "this person wrote it".
@@ -32,7 +36,25 @@ export async function registerDeletableConfession(db: Database, messageId: strin
     await db.insert(deletableConfessions).values({messageId, hash: authorHash});
 }
 
-export async function sendConfession(channel: TextChannel, confession: string, anonymous: boolean, interactionUser?: User): Promise<Message<true>> {
+/**
+ * The body of a confession as it appears in the embed. A confession with a trigger warning is
+ * hidden behind a spoiler so the warning can be read first and the content opened by choice.
+ *
+ * Any `||` the author typed is stripped before wrapping: leaving it in would close the spoiler
+ * early and reveal the rest, and nesting spoilers renders as literal pipes.
+ */
+function describeConfession(confession: string, triggerWarning?: string | null): string {
+    if (!triggerWarning) return confession;
+    return `⚠️ **Trigger warning:** ${triggerWarning}\n\n${spoiler(confession.replaceAll('||', ''))}`;
+}
+
+export async function sendConfession(
+    channel: TextChannel,
+    confession: string,
+    anonymous: boolean,
+    interactionUser?: User,
+    triggerWarning?: string | null,
+): Promise<Message<true>> {
     // `anonymous` and `interactionUser` have to agree: a signed confession needs a name to sign it
     // with, and an anonymous one must never be handed the identity it is supposed to hide.
     if (!anonymous && !interactionUser) throw new Error('sendConfession() was called for a signed confession without the confessing user.');
@@ -53,7 +75,7 @@ export async function sendConfession(channel: TextChannel, confession: string, a
         embeds: [
             {
                 title: '✉️ ' + (anonymous ? 'Anonymous Confession' : 'Confession'),
-                description: confession,
+                description: describeConfession(confession, triggerWarning),
                 color: Colors.Red,
                 timestamp: new Date().toISOString(),
                 author: (!anonymous && interactionUser) ? {name: interactionUser.username, icon_url: interactionUser.displayAvatarURL()} : undefined

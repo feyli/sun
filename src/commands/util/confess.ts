@@ -3,6 +3,7 @@ import { defineSlashCommand } from '../../types/commands';
 import { guildsOnly } from '../../utils/commandScopes';
 import { guilds } from "../../db/schema.ts";
 import { eq } from "drizzle-orm";
+import { CONFESSION_MAX_LENGTH, TRIGGER_WARNING_MAX_LENGTH } from '../../utils/confessions';
 
 export default defineSlashCommand({
     data: guildsOnly(new SlashCommandBuilder().setName('confess').setDescription('Confess (anonymously or not) your feelings to the world.')),
@@ -25,7 +26,23 @@ export default defineSlashCommand({
                 (label) =>
                     label
                         .setLabel('What would you like to confess?')
-                        .setTextInputComponent((input) => input.setCustomId('confession_input').setStyle(TextInputStyle.Paragraph).setRequired(true)),
+                        // Capped short of the 4096-character embed description limit, which also has
+                        // to fit the trigger warning and the spoiler markers wrapped around this.
+                        .setTextInputComponent((input) =>
+                            input.setCustomId('confession_input').setStyle(TextInputStyle.Paragraph).setRequired(true).setMaxLength(CONFESSION_MAX_LENGTH),
+                        ),
+                (label) =>
+                    label
+                        .setLabel('Trigger warning (optional)')
+                        .setDescription('Naming a subject here hides your confession behind a spoiler, so people can choose to read it.')
+                        .setTextInputComponent((input) =>
+                            input
+                                .setCustomId('trigger_warning_input')
+                                .setStyle(TextInputStyle.Short)
+                                .setRequired(false)
+                                .setMaxLength(TRIGGER_WARNING_MAX_LENGTH)
+                                .setPlaceholder('e.g. self-harm, eating disorders'),
+                        ),
                 (label) =>
                     label
                         .setLabel('Post anonymously')

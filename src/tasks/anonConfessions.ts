@@ -15,6 +15,8 @@ const QUEUE_NAME = 'anonymous-confessions';
 interface DelayedConfession {
     guildId: Snowflake;
     confession: string;
+    /** Subject the author warned about, or `null` when they gave none. */
+    triggerWarning: string | null;
     authorHash: string;
 }
 
@@ -46,7 +48,7 @@ export async function queueAnonymousConfession(data: DelayedConfession, delaySec
  * with backoff — the right outcome for a Discord outage or a channel that is briefly
  * unreachable, and the reason this does not swallow its own errors.
  */
-async function publishConfession(client: Client, {guildId, confession, authorHash}: DelayedConfession): Promise<void> {
+async function publishConfession(client: Client, {guildId, confession, triggerWarning, authorHash}: DelayedConfession): Promise<void> {
     const [row] = await client.db.select({channelId: guilds.confessionChannelId}).from(guilds).where(eq(guilds.guildId, guildId));
 
     // No channel configured, or the guild is gone: nothing to retry towards, so the job is
@@ -62,7 +64,7 @@ async function publishConfession(client: Client, {guildId, confession, authorHas
         throw new Error(`Confession channel ${row.channelId} of guild ${guildId} is not a sendable text channel.`);
     }
 
-    const message = await sendConfession(channel, confession, true);
+    const message = await sendConfession(channel, confession, true, undefined, triggerWarning);
     await registerDeletableConfession(client.db, message.id, authorHash);
 }
 

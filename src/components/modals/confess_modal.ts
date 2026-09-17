@@ -10,6 +10,8 @@ export default defineModal({
     guildOnly: true,
     async execute(interaction) {
         const confession = interaction.fields.getTextInputValue('confession_input');
+        // Optional, so Discord may leave the component out entirely rather than send it empty.
+        const triggerWarning = interaction.fields.fields.has('trigger_warning_input') ? interaction.fields.getTextInputValue('trigger_warning_input').trim() || null : null;
         const anonymousField = interaction.fields.getStringSelectValues('confession_privacy')?.[0];
         let anonymousState: 'yes+delayed' | 'yes' | 'no';
 
@@ -40,6 +42,7 @@ export default defineModal({
                     {
                         guildId: interaction.guild.id,
                         confession,
+                        triggerWarning,
                         authorHash: await generateDeleteHash(interaction.user.id),
                     },
                     delaySeconds,
@@ -48,10 +51,10 @@ export default defineModal({
                 return await interaction.reply({content: 'Your confession will be sent anonymously once a random timer anywhere between 15 and 30 minutes has elapsed.', flags: MessageFlags.Ephemeral});
             }
             case 'yes':
-                confessionMessage = await sendConfession(channel, confession, true);
+                confessionMessage = await sendConfession(channel, confession, true, undefined, triggerWarning);
                 break;
             case 'no':
-                confessionMessage = await sendConfession(channel, confession, false, interaction.user);
+                confessionMessage = await sendConfession(channel, confession, false, interaction.user, triggerWarning);
                 break;
             default:
                 return await interaction.reply({content: 'An error has occured. Please contact the dev for more information.', flags: MessageFlags.Ephemeral});
