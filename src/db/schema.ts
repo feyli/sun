@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm';
-import { boolean, check, foreignKey, index, integer, jsonb, pgEnum, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
+import { boolean, check, foreignKey, index, integer, jsonb, pgEnum, pgTable, text, timestamp, varchar } from 'drizzle-orm/pg-core';
 
 /** Discord snowflakes are at most 20 digits; 30 leaves headroom and matches the original schema. */
 const SNOWFLAKE_LENGTH = 30;
@@ -75,7 +75,7 @@ export const warns = pgTable(
     {
         warnId: varchar('warn_id', {length: 25}).primaryKey(),
         userId: varchar('user_id', {length: SNOWFLAKE_LENGTH}).notNull(),
-        guildId: varchar('guild_id', {length: SNOWFLAKE_LENGTH}).notNull(),
+        guildId: varchar('guild_id', {length: SNOWFLAKE_LENGTH}).references(() => guilds.guildId).notNull(),
         timestamp: timestamp('timestamp', {withTimezone: true}).notNull().defaultNow(),
         reasonTitle: text('reason_title').notNull(),
         reasonDescription: text('reason_description'),
@@ -113,13 +113,16 @@ export const commandLogs = pgTable(
     ],
 );
 
-export const awaitingConfessions = pgTable(
-    'awaiting_confessions',
+/**
+ * Who is allowed to delete a posted confession, as an argon2 hash of the author. Populated for
+ * immediate and delayed confessions alike; pending delayed confessions live in the `pgboss`
+ * schema instead, since the queue owns their schedule.
+ */
+export const deletableConfessions = pgTable(
+    'deletable_confessions',
     {
-        id: uuid('id').primaryKey().default(sql`uuidv7()`),
-        guildId: varchar('guild_id', {length: SNOWFLAKE_LENGTH}).notNull(),
-        confession: text('confession').notNull(),
-        publishingDate: timestamp('publishing_date', {withTimezone: true}).notNull(),
+        messageId: varchar('message_id', {length: SNOWFLAKE_LENGTH}).primaryKey(),
+        hash: text('hash').notNull(),
     }
 );
 
@@ -130,5 +133,5 @@ export type NewWarn = typeof warns.$inferInsert;
 export type Command = typeof commands.$inferSelect;
 export type CommandLog = typeof commandLogs.$inferSelect;
 export type NewCommandLog = typeof commandLogs.$inferInsert;
-export type AwaitingConfession = typeof awaitingConfessions.$inferSelect;
-export type NewAwaitingConfession = typeof awaitingConfessions.$inferInsert;
+export type DeletableConfession = typeof deletableConfessions.$inferSelect;
+export type NewDeletableConfession = typeof deletableConfessions.$inferInsert;

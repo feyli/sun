@@ -1,0 +1,1 @@
+ALTER TABLE "warns" ADD CONSTRAINT "warns_guild_id_guilds_guild_id_fkey" FOREIGN KEY ("guild_id") REFERENCES "guilds"("guild_id");

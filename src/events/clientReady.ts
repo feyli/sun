@@ -1,6 +1,7 @@
 import { Events } from 'discord.js';
 import { config } from '../config';
 import { guilds } from '../db/schema';
+import { startAnonymousConfessionWorker } from '../tasks/anonConfessions';
 import { arcaneUpdate } from '../tasks/arcaneUpdate';
 import { updateMemberCounters } from '../tasks/memberCounter';
 import { updateMinecraftCounters } from '../tasks/minecraftCounter';
@@ -40,5 +41,8 @@ export default defineEvent({
         await startRecurringTask('Member Counter', () => updateMemberCounters(client), 900_000);
         await startRecurringTask('Minecraft Counter', () => updateMinecraftCounters(client), 900_000);
         await startRecurringTask('Player Names Update', () => updatePlayerNames(client), 43_200_000);
+
+        // Queue-driven rather than polled: pg-boss wakes the worker when a job is due.
+        await startAnonymousConfessionWorker(client);
     },
 });

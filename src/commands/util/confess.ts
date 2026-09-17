@@ -30,33 +30,27 @@ export default defineSlashCommand({
                     label
                         .setLabel('Post anonymously')
                         .setDescription('Uncheck this to show your name on the confession.')
-                        .setCheckboxGroupComponent((checkbox) =>
-                            checkbox.setCustomId('confession_anonymous')
-                                .setMinValues(1)
-                                .setMaxValues(1)
+                        .setStringSelectMenuComponent((select) =>
+                            select.setCustomId('confession_privacy')
                                 .setRequired(true)
                                 .setOptions([
                                     {
-                                        label: 'Yes, with a random delay (WIP)',
+                                        label: 'Anonymous with random delay',
                                         value: 'yes+delayed',
                                         description: 'Check this to ensure maximum anonymity with a random timer (between 15 and 30 minutes).',
                                     },
                                     {
-                                        label: 'Yes',
+                                        label: 'Anonymous',
                                         value: 'yes',
-                                        description: 'Your confession will immediately be posted, anonymously.'
+                                        description: 'Your confession will immediately be posted, anonymously.',
+                                        default: true
                                     },
                                     {
-                                        label: 'No',
+                                        label: 'Not anonymous',
                                         value: 'no',
                                         description: 'Your confession will immediately be posted and your username will be referenced on the post.'
                                     }
-                                ])),
-                (label) =>
-                    label
-                        .setLabel('Spoiler?')
-                        .setDescription('Check this to mark your confession as a spoiler and have it hidden by default.')
-                        .setCheckboxComponent((checkbox) => checkbox.setCustomId('confession_spoiler').setDefault(false))
+                                ]))
             );
 
         await interaction.showModal(modal);

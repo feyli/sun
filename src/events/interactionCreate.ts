@@ -13,7 +13,7 @@ import {
 import { commandLogs, type CommandLogOption } from '../db/schema';
 import { config } from '../config';
 import { defineEvent } from '../types/commands';
-import { getChannelName, hoistOptions } from '../utils/interactions';
+import { describeInteraction, getChannelName, hoistOptions, reportInteractionError } from '../utils/interactions';
 
 const IN_DEVELOPMENT_MESSAGE = 'This command is in development phase!';
 
@@ -125,18 +125,25 @@ export default defineEvent({
             const command = interaction.client.commands.get(interaction.commandName);
             if (command?.kind !== 'slash' || !command.autocomplete) return;
 
+            // Autocomplete cannot be replied to, so a failure can only be logged.
             try {
                 await command.autocomplete(interaction);
             } catch (error) {
-                console.error(error);
+                console.error(`[ERROR] Autocomplete for ${describeInteraction(interaction)} failed:`, error);
             }
             return;
         }
 
-        if (interaction.isChatInputCommand() || interaction.isContextMenuCommand()) return handleCommand(interaction);
-        if (interaction.isButton() || interaction.isModalSubmit()) return handleComponent(interaction);
+        // The single catch-all for anything thrown while handling an interaction: every command,
+        // component and modal of the bot is dispatched from here, so the user always gets an answer.
+        try {
+            if (interaction.isChatInputCommand() || interaction.isContextMenuCommand()) return await handleCommand(interaction);
+            if (interaction.isButton() || interaction.isModalSubmit()) return await handleComponent(interaction);
 
-        // Other component types (select menus, ...) are not used by the bot.
-        return interaction.reply({content: IN_DEVELOPMENT_MESSAGE, flags: MessageFlags.Ephemeral});
+            // Other component types (select menus, ...) are not used by the bot.
+            return await interaction.reply({content: IN_DEVELOPMENT_MESSAGE, flags: MessageFlags.Ephemeral});
+        } catch (error) {
+            return await reportInteractionError(interaction, error);
+        }
     },
 });

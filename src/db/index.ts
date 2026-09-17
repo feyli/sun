@@ -6,7 +6,7 @@ import { postgresConnection } from './connection';
  * Bun's native PostgreSQL client, wrapped by Drizzle.
  * Discrete credentials avoid percent-encoding problems in a connection URL.
  */
-const client = new SQL({
+export const client = new SQL({
     hostname: postgresConnection.host,
     port: postgresConnection.port,
     database: postgresConnection.database,
