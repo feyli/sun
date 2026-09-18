@@ -45,7 +45,7 @@ export default defineSlashCommand({
             return interaction.editReply({embeds: [embed]});
         }
 
-        const [row] = await db.select({memberCounterChannelId: guilds.memberCounterChannelId}).from(guilds).where(eq(guilds.guildId, interaction.guild.id));
+        const [row] = await db.select({memberCounterChannelId: guilds.memberCounterChannelId}).from(guilds).where(eq(guilds.id, interaction.guild.id));
         const dbChannelId = row?.memberCounterChannelId ?? null;
         let counterChannel = dbChannelId ? interaction.guild.channels.cache.get(dbChannelId) : undefined;
 
@@ -61,7 +61,7 @@ export default defineSlashCommand({
                 type: ChannelType.GuildVoice,
                 permissionOverwrites: [{id: interaction.guild.id, deny: [PermissionFlagsBits.Connect]}],
             });
-            db.update(guilds).set({memberCounterChannelId: channel.id}).where(eq(guilds.guildId, interaction.guild.id)).catch(console.error);
+            db.update(guilds).set({memberCounterChannelId: channel.id}).where(eq(guilds.id, interaction.guild.id)).catch(console.error);
             await interaction.editReply(`${channel} has been created and will now update every 15 minutes.`);
         }
 
@@ -69,7 +69,7 @@ export default defineSlashCommand({
             if (!dbChannelId) return interaction.editReply('No member counter has been set up in this server!');
             db.update(guilds)
                 .set({memberCounterChannelId: null, memberCounterStyle: null})
-                .where(eq(guilds.guildId, interaction.guild.id))
+                .where(eq(guilds.id, interaction.guild.id))
                 .catch(console.error);
             if (counterChannel) counterChannel.delete().catch(console.error);
             await interaction.editReply('Member counter has been disabled!');
@@ -79,7 +79,7 @@ export default defineSlashCommand({
             if (!dbChannelId) return interaction.editReply('No member counter has been set up in this server!');
             const name = interaction.options.getString('name', true);
             if (!STYLE_VARIABLES.some((variable) => name.includes(variable))) return interaction.editReply('The name must include `{fullLength}` or `{thousandLength}`.');
-            db.update(guilds).set({memberCounterStyle: name}).where(eq(guilds.guildId, interaction.guild.id)).catch(console.error);
+            db.update(guilds).set({memberCounterStyle: name}).where(eq(guilds.id, interaction.guild.id)).catch(console.error);
 
             if (!counterChannel) {
                 counterChannel = await interaction.guild.channels.create({
@@ -87,7 +87,7 @@ export default defineSlashCommand({
                     type: ChannelType.GuildVoice,
                     permissionOverwrites: [{id: interaction.guild.id, deny: [PermissionFlagsBits.Connect]}],
                 });
-                db.update(guilds).set({memberCounterChannelId: counterChannel.id}).where(eq(guilds.guildId, interaction.guild.id)).catch(console.error);
+                db.update(guilds).set({memberCounterChannelId: counterChannel.id}).where(eq(guilds.id, interaction.guild.id)).catch(console.error);
             }
             await interaction.editReply(
                 `The member counter style has been set to \`${name}\` and the channel will soon be updated (remember that due to Discord limitations, counters are updated every 15 minutes).`,

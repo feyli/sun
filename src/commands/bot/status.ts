@@ -26,14 +26,14 @@ export default defineSlashCommand({
             const [row] = await db
                 .select({channelId: guilds.memberCounterChannelId, style: guilds.memberCounterStyle})
                 .from(guilds)
-                .where(eq(guilds.guildId, interaction.guild.id));
+                .where(eq(guilds.id, interaction.guild.id));
             let dbChannelId = row?.channelId ?? null;
             const counterChannel = dbChannelId ? interaction.guild.channels.cache.get(dbChannelId) : undefined;
 
             if (dbChannelId && !counterChannel) {
                 db.update(guilds)
                     .set({memberCounterChannelId: null, memberCounterStyle: null})
-                    .where(eq(guilds.guildId, interaction.guild.id))
+                    .where(eq(guilds.id, interaction.guild.id))
                     .catch(console.error);
                 dbChannelId = null;
             }
@@ -60,12 +60,12 @@ export default defineSlashCommand({
             const [row] = await db
                 .select({channelId: guilds.welcomeChannelId, message: guilds.welcomeMessage})
                 .from(guilds)
-                .where(eq(guilds.guildId, interaction.guild.id));
+                .where(eq(guilds.id, interaction.guild.id));
             let dbChannelId = row?.channelId ?? null;
             const welcomeChannel = dbChannelId ? interaction.guild.channels.cache.get(dbChannelId) : undefined;
 
             if (dbChannelId && !welcomeChannel) {
-                db.update(guilds).set({welcomeChannelId: null}).where(eq(guilds.guildId, interaction.guild.id)).catch(console.error);
+                db.update(guilds).set({welcomeChannelId: null}).where(eq(guilds.id, interaction.guild.id)).catch(console.error);
                 dbChannelId = null;
             }
 

@@ -43,7 +43,7 @@ export default defineMessageCommand({
         };
         console.log(JSON.stringify(brief));
 
-        interaction.client.db.update(guilds).set({missionBrief: brief}).where(eq(guilds.guildId, interaction.guild.id)).catch(console.error);
+        interaction.client.db.update(guilds).set({missionBrief: brief}).where(eq(guilds.id, interaction.guild.id)).catch(console.error);
 
         await modalInteraction.reply({
             embeds: [{title: 'Mission Brief Set', description: 'Preview the brief in this channel or send it to everyone!'}],

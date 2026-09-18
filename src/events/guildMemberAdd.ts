@@ -12,14 +12,14 @@ export default defineEvent({
         const [row] = await db
             .select({welcomeChannelId: guilds.welcomeChannelId, welcomeMessage: guilds.welcomeMessage})
             .from(guilds)
-            .where(eq(guilds.guildId, member.guild.id));
+            .where(eq(guilds.id, member.guild.id));
 
         const welcomeChannelId = row?.welcomeChannelId;
         if (!welcomeChannelId) return;
 
         const channel = member.guild.channels.cache.get(welcomeChannelId);
         if (!channel?.isSendable()) {
-            await db.update(guilds).set({welcomeChannelId: null}).where(eq(guilds.guildId, member.guild.id));
+            await db.update(guilds).set({welcomeChannelId: null}).where(eq(guilds.id, member.guild.id));
             return;
         }
 

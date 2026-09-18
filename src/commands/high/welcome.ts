@@ -38,7 +38,7 @@ export default defineSlashCommand({
         const subcommand = interaction.options.getSubcommand();
         const db = interaction.client.db;
 
-        const [row] = await db.select({welcomeChannelId: guilds.welcomeChannelId}).from(guilds).where(eq(guilds.guildId, interaction.guild.id));
+        const [row] = await db.select({welcomeChannelId: guilds.welcomeChannelId}).from(guilds).where(eq(guilds.id, interaction.guild.id));
         const welcomeChannelId = row?.welcomeChannelId ?? null;
 
         if (subcommand === 'enable') {
@@ -48,18 +48,18 @@ export default defineSlashCommand({
             if (!permissions?.has(PermissionFlagsBits.SendMessages)) return interaction.editReply('I do not have permission to send messages in that channel.');
             if (!permissions.has(PermissionFlagsBits.ViewChannel)) return interaction.editReply('I do not have permission to view that channel.');
 
-            await db.update(guilds).set({welcomeChannelId: channel.id}).where(eq(guilds.guildId, interaction.guild.id));
+            await db.update(guilds).set({welcomeChannelId: channel.id}).where(eq(guilds.id, interaction.guild.id));
             await interaction.editReply(`Successfully enabled the welcome system in ${channel}.`);
         } else if (subcommand === 'disable') {
             if (!welcomeChannelId) return interaction.editReply('The welcome system is already disabled.');
 
-            await db.update(guilds).set({welcomeChannelId: null, welcomeMessage: null}).where(eq(guilds.guildId, interaction.guild.id));
+            await db.update(guilds).set({welcomeChannelId: null, welcomeMessage: null}).where(eq(guilds.id, interaction.guild.id));
             await interaction.editReply('Successfully disabled the welcome system.');
         } else if (subcommand === 'setmessage') {
             if (!welcomeChannelId) return interaction.editReply('The welcome system is disabled. Enable it with `/welcome enable`.');
 
             const message = interaction.options.getString('message', true);
-            await db.update(guilds).set({welcomeMessage: message}).where(eq(guilds.guildId, interaction.guild.id));
+            await db.update(guilds).set({welcomeMessage: message}).where(eq(guilds.id, interaction.guild.id));
             await interaction.editReply('Successfully set the welcome message.');
         } else if (subcommand === 'help') {
             const embed: APIEmbed = {

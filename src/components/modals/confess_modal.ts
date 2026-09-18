@@ -21,7 +21,7 @@ export default defineModal({
         const [row] = await interaction.client.db
             .select({confessionChannelId: guilds.confessionChannelId})
             .from(guilds)
-            .where(eq(guilds.guildId, interaction.guild.id));
+            .where(eq(guilds.id, interaction.guild.id));
 
         // Post to the configured confession channel if one is set
         const channel = row?.confessionChannelId ? interaction.guild.channels.cache.get(row.confessionChannelId) : undefined;

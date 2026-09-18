@@ -4,7 +4,7 @@ import type { Database } from '../db';
 import { guilds, type MissionBrief } from '../db/schema';
 
 export async function getMissionBrief(db: Database, guildId: Snowflake): Promise<MissionBrief | null> {
-    const [row] = await db.select({missionBrief: guilds.missionBrief}).from(guilds).where(eq(guilds.guildId, guildId));
+    const [row] = await db.select({missionBrief: guilds.missionBrief}).from(guilds).where(eq(guilds.id, guildId));
     return row?.missionBrief ?? null;
 }
 
@@ -28,7 +28,7 @@ export async function sendMissionBrief(interaction: ChatInputCommandInteraction<
     const [row] = await interaction.client.db
         .select({briefChannel: guilds.briefChannel, missionBrief: guilds.missionBrief})
         .from(guilds)
-        .where(eq(guilds.guildId, interaction.guild.id));
+        .where(eq(guilds.id, interaction.guild.id));
 
     const briefChannelId = row?.briefChannel;
     if (!briefChannelId) return interaction.editReply('The mission brief channel has not been set.');

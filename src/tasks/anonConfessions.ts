@@ -49,7 +49,7 @@ export async function queueAnonymousConfession(data: DelayedConfession, delaySec
  * unreachable, and the reason this does not swallow its own errors.
  */
 async function publishConfession(client: Client, {guildId, confession, triggerWarning, authorHash}: DelayedConfession): Promise<void> {
-    const [row] = await client.db.select({channelId: guilds.confessionChannelId}).from(guilds).where(eq(guilds.guildId, guildId));
+    const [row] = await client.db.select({channelId: guilds.confessionChannelId}).from(guilds).where(eq(guilds.id, guildId));
 
     // No channel configured, or the guild is gone: nothing to retry towards, so the job is
     // completed rather than failed. Retrying could only republish it hours later, long after

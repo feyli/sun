@@ -15,7 +15,7 @@ export default defineSlashCommand({
         const [row] = await interaction.client.db
             .select({confessionChannelId: guilds.confessionChannelId})
             .from(guilds)
-            .where(eq(guilds.guildId, interaction.guild.id));
+            .where(eq(guilds.id, interaction.guild.id));
 
         if (!row?.confessionChannelId) return interaction.reply({content: "It seems like this server hasn't set up a confession channel yet. Please reach out to the server's admins to set up this feature.", flags: MessageFlags.Ephemeral});
 

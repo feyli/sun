@@ -37,11 +37,11 @@ export default defineSlashCommand({
         const subcommand = interaction.options.getSubcommand();
 
         if (subcommand === 'reset') {
-            await db.update(guilds).set({briefChannel: null}).where(eq(guilds.guildId, interaction.guild.id));
+            await db.update(guilds).set({briefChannel: null}).where(eq(guilds.id, interaction.guild.id));
             await interaction.reply({content: 'Reset the mission brief channel.'});
         } else if (subcommand === 'set') {
             const channel = interaction.options.getChannel('channel', true, BRIEF_CHANNEL_TYPES);
-            await db.update(guilds).set({briefChannel: channel.id}).where(eq(guilds.guildId, interaction.guild.id));
+            await db.update(guilds).set({briefChannel: channel.id}).where(eq(guilds.id, interaction.guild.id));
             await interaction.reply({content: `Set the mission brief channel to <#${channel.id}>.`});
         }
     },

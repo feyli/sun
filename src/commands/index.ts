@@ -1,64 +1,39 @@
+import { Glob } from 'bun';
 import type { Command } from '../types/commands';
-import ask from './ai/ask';
-import fixSpelling from './ai/fix_spelling';
-import summary from './ai/summary';
-import help from './bot/help';
-import invite from './bot/invite';
-import ping from './bot/ping';
-import status from './bot/status';
-import setBrief from './contextual/set_brief';
-import showAvatar from './contextual/show_avatar';
-import leaderboard from './exclusive/leaderboard';
-import mcpseudo from './exclusive/mcpseudo';
-import profile from './exclusive/profile';
-import confessionSettings from './high/confessionsettings';
-import mcsettings from './high/mcsettings';
-import membercounter from './high/membercounter';
-import welcome from './high/welcome';
-import clear from './mod/clear';
-import warn from './mod/warn';
-import evalCommand from './owner/eval';
-import test from './owner/test';
-import confess from './util/confess';
-import mcstatus from './util/mcstatus';
-import rolesort from './util/rolesort';
-import brief from './wt_campaign/brief';
-import briefchannel from './wt_campaign/briefchannel';
 
-/** Every application command of the bot. Add new commands here to have them deployed. */
-export const commands: Command[] = [
-    // AI
-    ask,
-    fixSpelling,
-    summary,
-    // Bot
-    help,
-    invite,
-    ping,
-    status,
-    // Context menus
-    setBrief,
-    showAvatar,
-    // Arcane Blades (guild-exclusive)
-    leaderboard,
-    mcpseudo,
-    profile,
-    // System management
-    confessionSettings,
-    mcsettings,
-    membercounter,
-    welcome,
-    // Moderation
-    clear,
-    warn,
-    // Owner
-    evalCommand,
-    test,
-    // Utility
-    confess,
-    mcstatus,
-    rolesort,
-    // War Thunder campaign (guild-exclusive)
-    brief,
-    briefchannel,
-];
+/** Every `.ts` file under this folder is a candidate command module, at any nesting depth. */
+const COMMAND_FILES = new Glob('**/*.ts');
+
+/**
+ * Checks that a module's default export really is a command. `kind` is what the `define*`
+ * factories stamp on their result, so it doubles as the discriminator here.
+ */
+function isCommand(value: unknown): value is Command {
+    if (typeof value !== 'object' || value === null) return false;
+    const candidate = value as Partial<Command>;
+    return (candidate.kind === 'slash' || candidate.kind === 'message' || candidate.kind === 'user') && typeof candidate.execute === 'function';
+}
+
+async function loadCommands(): Promise<Command[]> {
+    // Sorted so the deploy payload, and therefore `/help`, keeps a stable order across restarts.
+    const paths = [...COMMAND_FILES.scanSync({cwd: import.meta.dir, absolute: true})].sort((a, b) => a.localeCompare(b));
+
+    const loaded: Command[] = [];
+    for (const path of paths) {
+        if (path === import.meta.path) continue;
+
+        const module = (await import(path)) as { default?: unknown };
+        // Loud rather than silent: a command that is skipped here never reaches Discord.
+        if (!isCommand(module.default)) {
+            console.warn(`[WARN] ${path} is in the commands folder but does not default-export a command; skipping.`);
+            continue;
+        }
+
+        loaded.push(module.default);
+    }
+
+    return loaded;
+}
+
+/** Every application command of the bot, discovered from the category folders next to this file. */
+export const commands: Command[] = await loadCommands();

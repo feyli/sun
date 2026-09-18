@@ -32,7 +32,7 @@ export default defineEvent({
         client.user.setPresence(watchingServers(client.guilds.cache.size));
 
         // Make sure every guild the bot is in has a row in the database.
-        const rows = client.guilds.cache.map((guild) => ({guildId: guild.id}));
+        const rows = client.guilds.cache.map((guild) => ({id: guild.id}));
         if (rows.length > 0) {
             await client.db.insert(guilds).values(rows).onConflictDoNothing().catch(console.error);
         }
